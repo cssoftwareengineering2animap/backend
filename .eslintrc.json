@@ -19,7 +19,8 @@
     "@typescript-eslint/require-await": "off",
     "no-shadow": "off",
     "no-console": "off",
-    "no-unused-vars": [2, { "args": "all", "argsIgnorePattern": "^_+" }]
+    "no-unused-vars": [2, { "args": "all", "argsIgnorePattern": "^_+" }],
+    "import/prefer-default-export": "off"
   },
   "settings": {
     "import/parsers": {

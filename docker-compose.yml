@@ -1,10 +1,25 @@
 version: "3.7"
 
 services:
-  postgres:
-    container_name: animap_pg
+  animap_pg_dev:
+    container_name: animap_pg_dev
     image: postgres
     environment:
+      POSTGRES_DB: animap_dev
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      PGDATA: /data/postgres
+    ports:
+      - 5433:5432
+    volumes:
+      - postgres:/data/postgres
+    networks:
+      - animap
+  animap_pg_test:
+    container_name: animap_pg_test
+    image: postgres
+    environment:
+      POSTGRES_DB: animap_test
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
       PGDATA: /data/postgres

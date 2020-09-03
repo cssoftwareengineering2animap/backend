@@ -5,7 +5,6 @@ import { readdir } from "fs"
 import { promisify } from "util"
 import { env } from "process"
 
-
 async function seed(): Promise<void> {
   const connectionOptions = await getConnectionOptions(env.NODE_ENV)
   const connection = await createConnection({
@@ -25,4 +24,5 @@ async function seed(): Promise<void> {
 
   await connection.close()
 }
+// eslint-disable-next-line @typescript-eslint/no-floating-promises
 seed()

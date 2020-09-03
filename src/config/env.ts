@@ -8,6 +8,6 @@ const get = (key: string): string => {
 
 const keys = ["NODE_ENV", "APP_KEY", "PORT"] as const
 
-export const env =  Object.fromEntries(keys.map(key => [key, get(key)])) as {
+export const env = Object.fromEntries(keys.map(key => [key, get(key)])) as {
   [key in typeof keys[number]]: string
 }

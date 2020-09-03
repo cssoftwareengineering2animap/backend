@@ -1,0 +1,38 @@
+[
+  {
+    "name": "dev",
+    "type": "postgres",
+    "port": 5432,
+    "database": "postgres",
+    "username": "postgres",
+    "password": "postgres",
+    "synchronize": true,
+    "logging": false,
+    "entities": ["src/infra/database/entities/**/*.ts"],
+    "migrations": ["src/infra/database/migrations/**/*.ts"],
+    "subscribers": ["src/infra/database/subscribers/**/*.ts"],
+    "cli": {
+      "entitiesDir": "src/infra/database/entities",
+      "migrationsDir": "src/infra/database/migrations",
+      "subscribersDir": "src/infra/database/subscribers"
+    }
+  },
+  {
+    "name": "test",
+    "type": "postgres",
+    "port": 5433,
+    "database": "postgres",
+    "username": "postgres",
+    "password": "postgres",
+    "synchronize": true,
+    "logging": false,
+    "entities": ["src/infra/database/entities/**/*.ts"],
+    "migrations": ["src/infra/database/migrations/**/*.ts"],
+    "subscribers": ["src/infra/database/subscribers/**/*.ts"],
+    "cli": {
+      "entitiesDir": "src/infra/database/entities",
+      "migrationsDir": "src/infra/database/migrations",
+      "subscribersDir": "src/infra/database/subscribers"
+    }
+  }
+]
