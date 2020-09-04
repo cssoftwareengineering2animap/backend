@@ -8,6 +8,7 @@ import {
   BaseEntity,
 } from "typeorm"
 import { ID } from "../../core/types/id"
+import { File } from "./file_entity"
 
 @Entity()
 export class Pet extends BaseEntity {

@@ -1,14 +1,16 @@
+import * as faker from "faker"
 import { User } from "../../../domain/entities/user_entity"
-
-type TypeOrmActiveRecord = {
-  create: <T>(props: object) => T
-}
 
 const entityFactoryMap = new Map()
 
-entityFactoryMap.set(User, () => ({}))
+entityFactoryMap.set(User, () => ({
+  name: faker.internet.userName(),
+  email: faker.internet.email(),
+  password: faker.internet.password(),
+  phone: faker.phone.phoneNumberFormat(0).replace(/-/g, ""),
+}))
 
-export const build = async <T>(entity: T) => {
+export const build = async (entity: unknown) => {
   const entityFactory = await entityFactoryMap.get(entity)
   if (!entityFactory) {
     throw new Error(`entity ${entity} is not registered`)
@@ -17,5 +19,6 @@ export const build = async <T>(entity: T) => {
   return entityFactory()
 }
 
-export const create = (entity: TypeOrmActiveRecord) =>
-  build(entity).then(entity.create)
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export const create = (entity: any) =>
+  build(entity).then(data => entity.create(data).save())

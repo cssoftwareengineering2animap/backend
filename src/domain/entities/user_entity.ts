@@ -14,13 +14,16 @@ export class User extends BaseEntity {
   id: ID
 
   @Column()
-  nome: string
+  name: string
 
-  @Column()
+  @Column({ unique: true })
   email: string
 
-  @Column()
+  @Column({ unique: true })
   phone: string
+
+  @Column({ select: false })
+  password: string
 
   @OneToOne(() => File)
   profilePicture: File

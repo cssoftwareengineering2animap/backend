@@ -1,9 +1,18 @@
-import { injectable } from "tsyringe"
-import { Entity } from "typeorm"
+import { injectable, inject } from "tsyringe"
 import { CreateUserDto } from "./create_user_dto"
 import { User } from "../../../entities/user_entity"
+import { EncryptionProvider } from "../../../providers/encryption_provider"
 
 @injectable()
 export class CreateUserUseCase {
-  execute = (data: CreateUserDto) => User.create(data)
+  constructor(
+    @inject("EncryptionProvider")
+    private readonly encryptionProvider: EncryptionProvider
+  ) {}
+
+  execute = async (data: CreateUserDto) => {
+    const user = User.create(data)
+    user.password = await this.encryptionProvider.hash(user.password)
+    return user.save()
+  }
 }
