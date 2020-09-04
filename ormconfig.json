@@ -7,12 +7,12 @@
     "username": "postgres",
     "password": "postgres",
     "synchronize": true,
-    "logging": false,
-    "entities": ["src/infra/database/entities/**/*.ts"],
+    "logging": true,
+    "entities": ["src/domain/entities/**/*.ts"],
     "migrations": ["src/infra/database/migrations/**/*.ts"],
     "subscribers": ["src/infra/database/subscribers/**/*.ts"],
     "cli": {
-      "entitiesDir": "src/infra/database/entities",
+      "entitiesDir": "src/domain/entities",
       "migrationsDir": "src/infra/database/migrations",
       "subscribersDir": "src/infra/database/subscribers"
     }
@@ -26,11 +26,11 @@
     "password": "postgres",
     "synchronize": true,
     "logging": false,
-    "entities": ["src/infra/database/entities/**/*.ts"],
+    "entities": ["src/domain/entities/**/*.ts"],
     "migrations": ["src/infra/database/migrations/**/*.ts"],
     "subscribers": ["src/infra/database/subscribers/**/*.ts"],
     "cli": {
-      "entitiesDir": "src/infra/database/entities",
+      "entitiesDir": "src/domain/entities",
       "migrationsDir": "src/infra/database/migrations",
       "subscribersDir": "src/infra/database/subscribers"
     }
