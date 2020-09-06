@@ -1,4 +1,5 @@
 import * as faker from "faker"
+import * as bcrypt from "bcrypt"
 import { User } from "../../../domain/entities/user_entity"
 
 const entityFactoryMap = new Map()

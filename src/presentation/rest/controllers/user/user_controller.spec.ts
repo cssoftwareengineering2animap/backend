@@ -1,4 +1,5 @@
 import request from "supertest"
+import * as R from "ramda"
 import { app } from "../../server"
 import * as factory from "../../../../infra/database/support/factory"
 import * as connection from "../../../../infra/database/support/connection"
@@ -17,10 +18,12 @@ describe("User controller functional test suite", () => {
       .send(user)
       .expect(400)
 
-    expect(response.body[0].property).toBe("email")
+    expect(response.body[0].message).toBe(
+      "O email deve estar em um formato válido"
+    )
   })
 
-  test.only("POST api/v1/users :: when email is already in use, should fail with an error message", async () => {
+  test("POST api/v1/users :: when email is already in use, should fail with an error message", async () => {
     const { email } = await factory.create(User)
 
     const user = await factory.build(User).then(data => ({ ...data, email }))
@@ -30,7 +33,7 @@ describe("User controller functional test suite", () => {
       .send(user)
       .expect(400)
 
-    expect(response.body[0].property).toBe("email")
+    expect(response.body[0].message).toBe("Esse email já está em uso")
   })
 
   test("POST api/v1/users :: when name is invalid, should fail with an error message", async () => {
@@ -42,39 +45,62 @@ describe("User controller functional test suite", () => {
       .send(user)
       .expect(400)
 
-    expect(response.body[0].property).toBe("name")
+    expect(response.body[0].message).toBe("O nome deve ser informado")
   })
 
   test("POST api/v1/users :: when phone is invalid, should fail with an error message", async () => {
     const user = await factory.build(User)
-    user.phone = "invalid_phone"
+    user.phone = "123"
 
     const response = await request(app)
       .post("/api/v1/users")
       .send(user)
       .expect(400)
 
-    expect(response.body[0].property).toBe("phone")
+    expect(response.body[0].message).toBe(
+      "O telefone deve ter no mínimo 10 dígitos"
+    )
   })
 
-  test("POST api/v1/users :: when password is invalid, should fail with an error message", async () => {
+  test("POST api/v1/users :: when phone is already in use, should fail with an error message", async () => {
+    const { phone } = await factory.create(User)
+
     const user = await factory.build(User)
-    user.phone = "short"
+
+    user.phone = phone
 
     const response = await request(app)
       .post("/api/v1/users")
       .send(user)
       .expect(400)
 
-    expect(response.body[0].property).toBe("password")
+    expect(response.body[0].message).toBe("Esse telefone já está em uso")
   })
 
-  /* test.only("POST api/v1/users :: when all validation passes, should be able to create a new user", async () => {
+  test("POST api/v1/users :: when password is too short, should fail with an error message", async () => {
+    const user = await factory.build(User)
+    user.password = "short"
+
+    const response = await request(app)
+      .post("/api/v1/users")
+      .send(user)
+      .expect(400)
+
+    expect(response.body[0].message).toBe(
+      "A senha deve ter no mínimo 6 caracteres"
+    )
+  })
+
+  test("POST api/v1/users :: when all validation passes, should be able to create a new user", async () => {
     const user = await factory.build(User)
 
-    const response = await request(app).post("/api/v1/users").send(user)
-    // .expect(201)
+    const response = await request(app)
+      .post("/api/v1/users")
+      .send(user)
+      .expect(201)
 
-    console.log(response.body)
-  }) */
+    expect(response.body.data.id).toBeTruthy()
+
+    expect(response.body.data).toMatchObject(R.omit(["password"], user))
+  })
 })

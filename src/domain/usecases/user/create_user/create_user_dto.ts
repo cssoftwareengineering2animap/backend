@@ -8,10 +8,8 @@ export class CreateUserDto {
   }
 
   @IsNotEmpty({ message: "O nome deve ser informado" })
-  @MaxLength(255, { message: "O nome deve ter no máximo 254 caracteres" })
   name: string
 
-  @IsNotEmpty({ message: "O email deve ser informado" })
   @IsEmail({}, { message: "O email deve estar em um formato válido" })
   @unique(
     { field: "email", entity: User },
@@ -20,7 +18,6 @@ export class CreateUserDto {
   email: string
 
   @MinLength(6, { message: "A senha deve ter no mínimo 6 caracteres" })
-  @MaxLength(255, { message: "A senha deve ter no máximo 254 caracteres" })
   password: string
 
   @MinLength(10, { message: "O telefone deve ter no mínimo 10 dígitos" })

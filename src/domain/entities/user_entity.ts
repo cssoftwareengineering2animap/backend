@@ -22,8 +22,8 @@ export class User extends BaseEntity {
   @Column({ unique: true })
   phone: string
 
-  @Column({ select: false })
-  password: string
+  @Column({ select: false, nullable: false })
+  password?: string
 
   @OneToOne(() => File)
   profilePicture: File

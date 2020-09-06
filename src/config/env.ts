@@ -6,7 +6,14 @@ const get = (key: string): string => {
   return value
 }
 
-const keys = ["NODE_ENV", "APP_KEY", "PORT"] as const
+const keys = [
+  "NODE_ENV",
+  "APP_KEY",
+  "PORT",
+  "REDIS_SESSION_HOST",
+  "REDIS_SESSION_PORT",
+  "REDIS_SESSION_PASSWORD",
+] as const
 
 export const env = Object.fromEntries(keys.map(key => [key, get(key)])) as {
   [key in typeof keys[number]]: string

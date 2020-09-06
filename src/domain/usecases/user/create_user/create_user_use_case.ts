@@ -12,7 +12,13 @@ export class CreateUserUseCase {
 
   execute = async (data: CreateUserDto) => {
     const user = User.create(data)
-    user.password = await this.encryptionProvider.hash(user.password)
-    return user.save()
+
+    user.password = await this.encryptionProvider.hash(data.password)
+
+    await user.save()
+
+    user.password = undefined
+
+    return user
   }
 }
