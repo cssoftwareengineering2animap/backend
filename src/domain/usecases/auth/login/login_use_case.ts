@@ -17,7 +17,7 @@ export class LoginUseCase {
   execute = async (data: LoginDto) => {
     const user = await User.findOne(
       { email: data.email },
-      { select: ["id", "password"] }
+      { select: ["id", "email", "password"] }
     )
     if (!user) {
       throw new UnauthorizedError("Email não encontrado")
