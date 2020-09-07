@@ -8,6 +8,12 @@ export const router = Router()
 
 const petController = container.resolve(PetController)
 
+router.get(
+  "/v1/:user_id/pets",
+  authRequired,
+  withErrorHandler(petController.getPets)
+)
+
 router.post(
   "/v1/:user_id/pets",
   authRequired,

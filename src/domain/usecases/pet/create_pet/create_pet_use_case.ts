@@ -1,7 +1,7 @@
 import { injectable } from "tsyringe"
 import { CreatePetDto } from "./create_pet_dto"
-import { User } from "../../entities/user_entity"
-import { Pet } from "../../entities/pet_entity"
+import { User } from "../../../entities/user_entity"
+import { Pet } from "../../../entities/pet_entity"
 
 @injectable()
 export class CreatePetUseCase {

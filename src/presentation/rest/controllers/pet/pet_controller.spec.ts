@@ -1,4 +1,5 @@
 import request from "supertest"
+import * as R from "ramda"
 import { app } from "../../server"
 import * as factory from "../../../../infra/database/support/factory"
 import * as connection from "../../../../infra/database/support/connection"
@@ -123,5 +124,38 @@ describe("Pet controller functional test suite", () => {
     expect(response.body.data.owner.id).toBe(user.id)
 
     expect(response.body.data).toMatchObject(pet)
+  })
+
+  test("GET api/v1/:user_id/pets :: should be able to list user pets", async () => {
+    const user = await factory.create(User)
+
+    const token = await request(app)
+      .post("/api/v1/login")
+      .send({ email: user.email, password: user.password })
+      .then(response => response.body.data.token)
+
+    const pets = await Promise.all(
+      R.range(0, 5).map(() =>
+        factory
+          .build(Pet)
+          .then(pet =>
+            request(app)
+              .post(`/api/v1/${user.id}/pets`)
+              .set("Authorization", token)
+              .send(pet)
+              .expect(201)
+          )
+          .then(response => response.body.data)
+      )
+    )
+
+    const response = await request(app)
+      .get(`/api/v1/${user.id}/pets`)
+      .set("Authorization", token)
+      .expect(200)
+
+    expect(pets.map(pet => pet.id)).toEqual(
+      response.body.data.map(({ node }) => node.id)
+    )
   })
 })
