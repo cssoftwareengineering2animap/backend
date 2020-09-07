@@ -6,6 +6,7 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
   ManyToOne,
+  Column,
 } from "typeorm"
 import { ID } from "../../core/types/id"
 import { User } from "./user_entity"
@@ -15,6 +16,9 @@ import { Pet } from "./pet_entity"
 export class Rating extends BaseEntity {
   @PrimaryGeneratedColumn("uuid")
   id: ID
+
+  @Column()
+  stars: number
 
   @ManyToOne(() => User, user => user.ratings)
   user: User
