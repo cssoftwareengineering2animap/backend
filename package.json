@@ -9,9 +9,9 @@
     "eslint:fix": "node_modules/.bin/eslint --fix . --ext ts",
     "compose:dev": "sudo docker-compose -f docker-compose.yml up -d",
     "build": "node_modules/.bin/tsc",
-    "start": "node build/main",
+    "start": "node build/src/main",
     "dev": "node_modules/.bin/ts-node-dev -r dotenv/config src/main",
-    "test": "NODE_ENV=test node_modules/.bin/jest --setupFiles dotenv/config --forceExit --detectOpenHandles --testTimeout=10000",
+    "test": "NODE_ENV=test node_modules/.bin/jest --runInBand --setupFiles dotenv/config --forceExit --detectOpenHandles --testTimeout=10000",
     "cov": "node_modules/.bin/jest --coverage"
   },
   "dependencies": {
@@ -26,8 +26,12 @@
     "pg": "^8.0.3",
     "ramda": "^0.27.1",
     "reflect-metadata": "^0.1.13",
+    "socket.io": "^2.3.0",
+    "socket.io-redis": "^5.4.0",
     "tsyringe": "^4.3.0",
     "typeorm": "^0.2.24",
+    "typeorm-test-transactions": "^1.13.0",
+    "typeorm-transactional-cls-hooked": "^0.1.12",
     "uuid": "^8.3.0",
     "yup": "^0.28.5"
   },
@@ -42,6 +46,8 @@
     "@types/moment": "^2.13.0",
     "@types/node": "^14.6.4",
     "@types/ramda": "^0.27.14",
+    "@types/socket.io": "^2.1.11",
+    "@types/socket.io-redis": "^1.0.26",
     "@types/supertest": "^2.0.10",
     "@types/uuid": "^8.3.0",
     "@types/yup": "^0.28.0",

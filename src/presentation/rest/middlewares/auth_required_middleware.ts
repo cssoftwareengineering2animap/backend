@@ -1,13 +1,13 @@
-import { Request, Response, NextFunction } from "express"
 import { container } from "tsyringe"
 import { StatusCodes } from "http-status-codes"
+import { Request, Response, NextFunction } from "express"
 import { SessionProvider } from "../../../domain/providers/session_provider"
 import { User } from "../../../domain/entities/user_entity"
 
 export const authRequired = async (
   request: Request,
   response: Response,
-  next: NextFunction
+  next?: NextFunction
 ) => {
   if (!request.headers.authorization) {
     return response.status(StatusCodes.UNAUTHORIZED).send()
@@ -34,5 +34,8 @@ export const authRequired = async (
     user,
   }
 
-  return next()
+  if (next) {
+    return next()
+  }
+  return null
 }

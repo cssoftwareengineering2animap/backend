@@ -1,6 +1,6 @@
 import { injectable, inject } from "tsyringe"
 import { StatusCodes } from "http-status-codes"
-import { Request, Response } from "express"
+import { Request, Response } from "express-serve-static-core"
 import { CreateUserUseCase } from "../../../../domain/usecases/user/create_user/create_user_use_case"
 import { CreateUserDto } from "../../../../domain/usecases/user/create_user/create_user_dto"
 import { envelope } from "../../utils/envelope"

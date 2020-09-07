@@ -18,7 +18,7 @@ export const clear = async () => {
   return Promise.all(
     entities.map(entity => {
       const repository = connection.getRepository(entity.name)
-      return repository.query(`DELETE FROM public."${entity.tableName}"`)
+      return repository.query(`TRUNCATE public."${entity.tableName}" CASCADE`)
     })
   )
 }
