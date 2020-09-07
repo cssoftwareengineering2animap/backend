@@ -1,6 +1,7 @@
 import * as faker from "faker"
-import * as bcrypt from "bcrypt"
+import moment from "moment"
 import { User } from "../../../domain/entities/user_entity"
+import { Pet } from "../../../domain/entities/pet_entity"
 
 const entityFactoryMap = new Map()
 
@@ -11,8 +12,15 @@ entityFactoryMap.set(User, () => ({
   phone: faker.phone.phoneNumberFormat(0).replace(/-/g, ""),
 }))
 
+entityFactoryMap.set(Pet, () => ({
+  name: faker.name.firstName(),
+  birthday: moment(faker.date.past()).format("YYYY-MM-DD"),
+  sex: faker.random.arrayElement(["male", "female"]),
+  type: faker.random.alphaNumeric(10),
+}))
+
 export const build = async (entity: unknown) => {
-  const entityFactory = await entityFactoryMap.get(entity)
+  const entityFactory = entityFactoryMap.get(entity)
   if (!entityFactory) {
     throw new Error(`entity ${entity} is not registered`)
   }
@@ -21,5 +29,14 @@ export const build = async (entity: unknown) => {
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export const create = (entity: any) =>
-  build(entity).then(data => entity.create(data).save())
+export const create = async (entity: any) => {
+  const data = await build(entity)
+
+  const instance = await entity.create(data).save()
+
+  if (data.password) {
+    instance.password = data.password
+  }
+
+  return instance
+}
