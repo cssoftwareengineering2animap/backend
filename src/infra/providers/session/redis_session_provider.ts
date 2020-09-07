@@ -74,11 +74,7 @@ export class RedisSessionProvider implements SessionProvider {
         sessionAsString ? JSON.parse(sessionAsString) : null
       )
 
-    if (!session) {
-      return null
-    }
-
-    if (!session || session.session_id !== sessionData.session_id) {
+    if (session?.session_id !== sessionData.session_id) {
       return null
     }
 
