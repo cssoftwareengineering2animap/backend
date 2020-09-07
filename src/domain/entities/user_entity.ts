@@ -4,9 +4,21 @@ import {
   PrimaryGeneratedColumn,
   OneToOne,
   BaseEntity,
+  OneToMany,
+  CreateDateColumn,
+  UpdateDateColumn,
+  BeforeUpdate,
+  BeforeInsert,
 } from "typeorm"
+import { container } from "tsyringe"
 import { ID } from "../../core/types/id"
 import { File } from "./file_entity"
+import { Pet } from "./pet_entity"
+import { EncryptionProvider } from "../providers/encryption_provider"
+
+const encryptionProvider = container.resolve<EncryptionProvider>(
+  "EncryptionProvider"
+)
 
 @Entity()
 export class User extends BaseEntity {
@@ -28,6 +40,8 @@ export class User extends BaseEntity {
   @OneToOne(() => File)
   profilePicture: File
 
+  @OneToMany(() => Pet, pet => pet.owner)
+  pets: Pet[]
   //  pets[Relação]
   // fotos
   // tipo
@@ -35,4 +49,20 @@ export class User extends BaseEntity {
   // documentos[Se for anfitrião]
   // bank_account[Se for anfitrião]
   // passeios[Se for anfitrião]
+
+  @CreateDateColumn({ name: "created_at" })
+  public createdAt: Date
+
+  @UpdateDateColumn({ name: "updated_at" })
+  public updatedAt: Date
+
+  @BeforeUpdate()
+  @BeforeInsert()
+  public async hashPassword() {
+    if (!this.password) {
+      return
+    }
+
+    this.password = await encryptionProvider.hash(this.password)
+  }
 }

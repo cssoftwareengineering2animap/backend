@@ -6,9 +6,13 @@ import {
   ManyToMany,
   JoinTable,
   BaseEntity,
+  ManyToOne,
+  CreateDateColumn,
+  UpdateDateColumn,
 } from "typeorm"
 import { ID } from "../../core/types/id"
 import { File } from "./file_entity"
+import { User } from "./user_entity"
 
 @Entity()
 export class Pet extends BaseEntity {
@@ -22,7 +26,7 @@ export class Pet extends BaseEntity {
   birthday: Date
 
   @Column()
-  sex: string
+  sex: "male" | "female"
 
   @Column()
   type: string
@@ -30,10 +34,18 @@ export class Pet extends BaseEntity {
   @OneToOne(() => File)
   profilePicture: File
 
+  @ManyToOne(() => User, user => user.pets)
+  owner: User
+
   @ManyToMany(() => File)
   @JoinTable()
   pictures: File[]
   // passeios[Relação]
   // dono[Relação]
-  // VaccinationCard[relação]
+
+  @CreateDateColumn({ name: "created_at" })
+  createdAt: Date
+
+  @UpdateDateColumn({ name: "updated_at" })
+  updatedAt: Date
 }
