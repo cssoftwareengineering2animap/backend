@@ -16,7 +16,7 @@ describe("Auth controller functional test suite", () => {
       .send({ email: user.email, password: user.password })
       .expect(401)
 
-    expect(response.body[0].message).toBe("Email não encontrado")
+    expect(response.body).toEqual([{ message: "Email não encontrado" }])
   })
 
   test("POST api/v1/login :: when password is not correct, should return an error message", async () => {
@@ -29,7 +29,7 @@ describe("Auth controller functional test suite", () => {
       .send({ email: user.email, password: "incorrect_password" })
       .expect(401)
 
-    expect(response.body[0].message).toBe("Senha incorreta")
+    expect(response.body).toEqual([{ message: "Senha incorreta" }])
   })
 
   test("POST api/v1/login :: when email exists & password is correct, should return a session token", async () => {
