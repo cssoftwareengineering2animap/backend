@@ -1,3 +1,4 @@
+/* eslint-disable import/no-cycle */
 import {
   Entity,
   Column,
@@ -9,10 +10,12 @@ import {
   ManyToOne,
   CreateDateColumn,
   UpdateDateColumn,
+  OneToMany,
 } from "typeorm"
 import { ID } from "../../core/types/id"
 import { File } from "./file_entity"
 import { User } from "./user_entity"
+import { Rating } from "./rating_entity"
 
 @Entity()
 export class Pet extends BaseEntity {
@@ -34,7 +37,7 @@ export class Pet extends BaseEntity {
   @OneToOne(() => File)
   profilePicture: File
 
-  @ManyToOne(() => User, user => user.pets)
+  @ManyToOne(() => User, user => user.pets, { cascade: true })
   owner: User
 
   @ManyToMany(() => File)
@@ -42,6 +45,9 @@ export class Pet extends BaseEntity {
   pictures: File[]
   // passeios[Relação]
   // dono[Relação]
+
+  @OneToMany(() => Rating, rating => rating.pet)
+  ratings: Rating[]
 
   @CreateDateColumn({ name: "created_at" })
   createdAt: Date
