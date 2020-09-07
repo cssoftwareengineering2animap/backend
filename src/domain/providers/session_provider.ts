@@ -1,8 +1,15 @@
 import { ID } from "../../core/types/id"
 
-type SessionToken = string
+export type SessionToken = string
+
+export type SessionData = {
+  user_id: ID
+  session_id: ID
+  authenticated_at: string
+}
 
 export interface SessionProvider {
   create: (userId: ID) => Promise<SessionToken>
   destroy: (session: SessionToken) => Promise<void>
+  validateToken: (sessionToken: SessionToken) => Promise<SessionData | null>
 }

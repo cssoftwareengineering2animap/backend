@@ -2,10 +2,15 @@ import Redis from "ioredis"
 import * as uuid from "uuid"
 import { inject, injectable } from "tsyringe"
 import moment from "moment"
-import { SessionProvider } from "../../../domain/providers/session_provider"
+import {
+  SessionProvider,
+  SessionToken,
+  SessionData,
+} from "../../../domain/providers/session_provider"
 import { env } from "../../../config/env"
 import { ID } from "../../../core/types/id"
 import { EncryptionProvider } from "../../../domain/providers/encryption_provider"
+import { ApplicationError } from "../../../core/errors/application_error"
 
 const ONE_WEEK_IN_SECONDS = 604800
 
@@ -26,7 +31,7 @@ export class RedisSessionProvider implements SessionProvider {
 
   private sessionKeyFromUserId = (id: ID) => `animap@user_sessions:${id}`
 
-  create = async (userId: string) => {
+  public create = async (userId: string) => {
     const sessionData = JSON.stringify({
       user_id: userId,
       session_id: uuid.v4(),
@@ -44,5 +49,39 @@ export class RedisSessionProvider implements SessionProvider {
     return sessionToken
   }
 
-  destroy: (session: string) => Promise<void>
+  public destroy = async (sessionToken: SessionToken) => {
+    const sessionData = await this.validateToken(sessionToken)
+    if (!sessionData) {
+      throw new ApplicationError(`Invalid session token: ${sessionToken}`)
+    }
+
+    await this.redis.del(this.sessionKeyFromUserId(sessionData.user_id))
+  }
+
+  public validateToken = async (
+    sessionToken: SessionToken
+  ): Promise<SessionData | null> => {
+    const sessionDataAsString = this.encryptionProvider.decrypt(sessionToken)
+    if (!sessionDataAsString) {
+      return null
+    }
+
+    const sessionData = JSON.parse(sessionDataAsString)
+
+    const session: SessionData | null = await this.redis
+      .get(this.sessionKeyFromUserId(sessionData.user_id))
+      .then(sessionAsString =>
+        sessionAsString ? JSON.parse(sessionAsString) : null
+      )
+
+    if (!session) {
+      return null
+    }
+
+    if (!session || session.session_id !== sessionData.session_id) {
+      return null
+    }
+
+    return sessionData
+  }
 }
