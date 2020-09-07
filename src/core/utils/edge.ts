@@ -1,4 +1,4 @@
-import { ID } from "../core/types/id"
+import { ID } from "../types/id"
 
 export type Edge<T> = {
   cursor: string

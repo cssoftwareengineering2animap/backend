@@ -1,7 +1,7 @@
 import { injectable } from "tsyringe"
 import { ID } from "../../../../core/types/id"
 import { Pet } from "../../../entities/pet_entity"
-import { edge } from "../../../edge"
+import { edge } from "../../../../core/utils/edge"
 
 @injectable()
 export class GetPetsUseCase {
