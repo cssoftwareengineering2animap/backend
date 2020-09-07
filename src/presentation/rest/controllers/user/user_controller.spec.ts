@@ -18,9 +18,9 @@ describe("User controller functional test suite", () => {
       .send(user)
       .expect(400)
 
-    expect(response.body[0].message).toBe(
-      "O email deve estar em um formato válido"
-    )
+    expect(response.body).toEqual([
+      { mesage: "O email deve estar em um formato válido" },
+    ])
   })
 
   test("POST api/v1/users :: when email is already in use, should fail with an error message", async () => {
@@ -33,7 +33,7 @@ describe("User controller functional test suite", () => {
       .send(user)
       .expect(400)
 
-    expect(response.body[0].message).toBe("Esse email já está em uso")
+    expect(response.body).toEqual([{ message: "Esse email já está em uso" }])
   })
 
   test("POST api/v1/users :: when name is invalid, should fail with an error message", async () => {
@@ -57,9 +57,9 @@ describe("User controller functional test suite", () => {
       .send(user)
       .expect(400)
 
-    expect(response.body[0].message).toBe(
-      "O telefone deve ter no mínimo 10 dígitos"
-    )
+    expect(response.body).toEqual([
+      { message: "O telefone deve ter no mínimo 10 dígitos" },
+    ])
   })
 
   test("POST api/v1/users :: when phone is already in use, should fail with an error message", async () => {
@@ -74,7 +74,7 @@ describe("User controller functional test suite", () => {
       .send(user)
       .expect(400)
 
-    expect(response.body[0].message).toBe("Esse telefone já está em uso")
+    expect(response.body).toEqual([{ message: "Esse telefone já está em uso" }])
   })
 
   test("POST api/v1/users :: when password is too short, should fail with an error message", async () => {
@@ -86,9 +86,9 @@ describe("User controller functional test suite", () => {
       .send(user)
       .expect(400)
 
-    expect(response.body[0].message).toBe(
-      "A senha deve ter no mínimo 6 caracteres"
-    )
+    expect(response.body).toEqual([
+      { message: "A senha deve ter no mínimo 6 caracteres" },
+    ])
   })
 
   test("POST api/v1/users :: when all validation passes, should be able to create a new user", async () => {
