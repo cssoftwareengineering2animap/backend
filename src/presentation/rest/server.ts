@@ -1,28 +1,16 @@
 import "reflect-metadata"
-import { Server } from "http"
+import http, { Server } from "http"
 import express from "express"
 import cors from "cors"
 import socketio from "socket.io"
 import socketioRedisAdapter from "socket.io-redis"
+import { container as tsyringeContainer } from "tsyringe"
 import { env } from "../../config/env"
 import { loadRoutes } from "./utils/load_routes"
 import * as connection from "../../infra/database/support/connection"
 import { globalErrorHandler } from "./middlewares/global_error_handler"
 import * as container from "./container"
-
-const io = socketio(3333)
-
-io.adapter(socketioRedisAdapter({ host: "127.0.0.1", port: 6379 }))
-
-io.emit("hello", "to all clients")
-io.to("room42").emit("hello", "to all clients in 'room42' room")
-
-io.on("connection", socket => {
-  socket.broadcast.emit("hello", "to all clients except sender")
-  socket
-    .to("room42")
-    .emit("hello", "to all clients in 'room42' room except sender")
-})
+import { ChatController } from "./controllers/ws/chat/chat_controller"
 
 interface ServerStartResult {
   server: Server
@@ -37,11 +25,31 @@ loadRoutes(app)
 
 app.use(globalErrorHandler)
 
-const startServer = async (): Promise<ServerStartResult> => {
+const server = new http.Server(app)
+
+export const startSocketServer = () => {
+  const io = socketio(server).adapter(
+    socketioRedisAdapter({
+      host: env.REDIS_CHAT_HOST,
+      port: Number(env.REDIS_CHAT_PORT),
+    })
+  )
+
+  io.on("connection", socket => {
+    const chatController = tsyringeContainer.resolve(ChatController)
+
+    socket.on("chat:message", message =>
+      chatController.onMessage(socket, message)
+    )
+
+    socket.on("chat:join", message => chatController.onJoin(socket, message))
+  })
+}
+
+export const startHttpServer = async (): Promise<ServerStartResult> => {
   await connection.create()
 
   const port = env.PORT
-  return { server: app.listen(port, () => {}), port }
-}
 
-export default startServer
+  return { server: server.listen(port), port }
+}

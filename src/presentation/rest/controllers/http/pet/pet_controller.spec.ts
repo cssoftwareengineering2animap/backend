@@ -4,11 +4,11 @@ import {
   runInTransaction,
   initialiseTestTransactions,
 } from "typeorm-test-transactions"
-import { app } from "../../server"
-import * as factory from "../../../../infra/database/support/factory"
-import * as connection from "../../../../infra/database/support/connection"
-import { User } from "../../../../domain/entities/user_entity"
-import { Pet } from "../../../../domain/entities/pet_entity"
+import { app } from "../../../server"
+import * as factory from "../../../../../infra/database/support/factory"
+import * as connection from "../../../../../infra/database/support/connection"
+import { User } from "../../../../../domain/entities/user_entity"
+import { Pet } from "../../../../../domain/entities/pet_entity"
 
 initialiseTestTransactions()
 

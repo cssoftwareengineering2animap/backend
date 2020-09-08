@@ -2,7 +2,7 @@ import { Router } from "express"
 import { container } from "tsyringe"
 import { withErrorHandler } from "../utils/with_error_handler"
 import { authRequired } from "../middlewares/auth_required_middleware"
-import { PetController } from "../controllers/pet/pet_controller"
+import { PetController } from "../controllers/http/pet/pet_controller"
 
 export const router = Router()
 

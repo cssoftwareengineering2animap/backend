@@ -1,5 +1,7 @@
-import startServer from "./presentation/rest/server"
+import { startHttpServer, startSocketServer } from "./presentation/rest/server"
 
-startServer()
+startSocketServer()
+
+startHttpServer()
   .then(({ port }) => console.log(`Listening on port ${port}`))
   .catch(console.error)

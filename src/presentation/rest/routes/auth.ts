@@ -1,7 +1,7 @@
 import { Router } from "express"
 import { container } from "tsyringe"
 import { withErrorHandler } from "../utils/with_error_handler"
-import { AuthController } from "../controllers/auth/auth_controller"
+import { AuthController } from "../controllers/http/auth/auth_controller"
 
 export const router = Router()
 
