@@ -1,4 +1,3 @@
-import Redis from "ioredis"
 import * as uuid from "uuid"
 import { inject, injectable } from "tsyringe"
 import moment from "moment"
@@ -7,10 +6,10 @@ import {
   SessionToken,
   SessionData,
 } from "../../../domain/providers/session_provider"
-import { env } from "../../../config/env"
 import { ID } from "../../../core/types/id"
 import { EncryptionProvider } from "../../../domain/providers/encryption_provider"
 import { ApplicationError } from "../../../core/errors/application_error"
+import { RedisProvider } from "../redis/redis_provider"
 
 const ONE_WEEK_IN_SECONDS = 604800
 
@@ -18,16 +17,12 @@ const ONE_WEEK_IN_SECONDS = 604800
 export class RedisSessionProvider implements SessionProvider {
   constructor(
     @inject("EncryptionProvider")
-    private readonly encryptionProvider: EncryptionProvider
-  ) {}
-
-  private redis = new Redis(
-    Number(env.REDIS_SESSION_PORT),
-    env.REDIS_SESSION_HOST,
-    {
-      password: env.REDIS_SESSION_PASSWORD,
-    }
-  )
+    private readonly encryptionProvider: EncryptionProvider,
+    @inject(RedisProvider)
+    private readonly redisProvider: RedisProvider
+  ) {
+    this.redisProvider.connection("sessions")
+  }
 
   private sessionKeyFromUserId = (id: ID) => `animap@user_sessions:${id}`
 
@@ -40,7 +35,7 @@ export class RedisSessionProvider implements SessionProvider {
 
     const sessionToken = this.encryptionProvider.encrypt(sessionData)
 
-    await this.redis.setex(
+    await this.redisProvider.setex(
       this.sessionKeyFromUserId(userId),
       ONE_WEEK_IN_SECONDS,
       sessionData
@@ -55,7 +50,7 @@ export class RedisSessionProvider implements SessionProvider {
       throw new ApplicationError(`Invalid session token: ${sessionToken}`)
     }
 
-    await this.redis.del(this.sessionKeyFromUserId(sessionData.user_id))
+    await this.redisProvider.del(this.sessionKeyFromUserId(sessionData.user_id))
   }
 
   public validateToken = async (
@@ -68,7 +63,7 @@ export class RedisSessionProvider implements SessionProvider {
 
     const sessionData = JSON.parse(sessionDataAsString)
 
-    const session: SessionData | null = await this.redis
+    const session: SessionData | null = await this.redisProvider
       .get(this.sessionKeyFromUserId(sessionData.user_id))
       .then(sessionAsString =>
         sessionAsString ? JSON.parse(sessionAsString) : null
