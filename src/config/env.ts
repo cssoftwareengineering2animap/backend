@@ -13,6 +13,9 @@ const keys = [
   "REDIS_SESSION_HOST",
   "REDIS_SESSION_PORT",
   "REDIS_SESSION_PASSWORD",
+  "REDIS_CHAT_HOST",
+  "REDIS_CHAT_PORT",
+  "REDIS_CHAT_PASSWORD",
 ] as const
 
 export const env = Object.fromEntries(keys.map(key => [key, get(key)])) as {
