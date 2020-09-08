@@ -26,14 +26,31 @@ export class BcryptEncryptionProvider implements EncryptionProvider {
       "hex"
     )}.${iv}`
 
-    return Buffer.from(encrypted).toString("base64")
+    const hmac = crypto
+      .createHmac("sha256", config.key)
+      .update(encrypted)
+      .digest()
+      .toString("hex")
+
+    return Buffer.from(`${encrypted}.${hmac}`).toString("base64")
   }
 
   public decrypt = (encryptedValue: string) => {
     try {
-      const [encrypted, iv] = Buffer.from(encryptedValue, "base64")
+      const [encrypted, iv, hmac] = Buffer.from(encryptedValue, "base64")
         .toString("utf8")
         .split(".")
+
+      const isHmacValid =
+        crypto
+          .createHmac("sha256", config.key)
+          .update(`${encrypted}.${iv}`)
+          .digest()
+          .toString("hex") === hmac
+
+      if (!isHmacValid) {
+        return null
+      }
 
       const decipher = crypto.createDecipheriv(config.alg, config.key, iv)
 
