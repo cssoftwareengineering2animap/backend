@@ -7,6 +7,7 @@ const get = (key: string): string => {
 }
 
 const keys = [
+  "HOST",
   "NODE_ENV",
   "APP_KEY",
   "PORT",

@@ -11,6 +11,7 @@ import * as connection from "../../infra/database/support/connection"
 import { globalErrorHandler } from "./middlewares/global_error_handler"
 import * as container from "./container"
 import { ChatController } from "./controllers/ws/chat/chat_controller"
+import { AckFunction, Message } from "./controllers/ws/types"
 
 interface ServerStartResult {
   server: Server
@@ -38,11 +39,15 @@ export const startSocketServer = () => {
   io.on("connection", socket => {
     const chatController = tsyringeContainer.resolve(ChatController)
 
-    socket.on("chat:message", message =>
-      chatController.onMessage(socket, message)
+    const noOpAck = () => {}
+
+    socket.on("chat:message", (message: Message, ack: AckFunction = noOpAck) =>
+      chatController.onMessage(socket, message, ack)
     )
 
-    socket.on("chat:join", message => chatController.onJoin(socket, message))
+    socket.on("chat:join", (message: Message, ack: AckFunction = noOpAck) =>
+      chatController.onJoin(socket, message, ack)
+    )
   })
 }
 

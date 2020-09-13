@@ -1,26 +1,38 @@
 /* eslint-disable import/no-cycle */
 import {
   Entity,
+  Column,
   PrimaryGeneratedColumn,
   BaseEntity,
   CreateDateColumn,
   UpdateDateColumn,
-  OneToMany,
+  ManyToOne,
 } from "typeorm"
 import { ID } from "../../core/types/id"
-import { ChatMessage } from "./chat_message_entity"
+import { User } from "./user_entity"
 
 @Entity()
-export class Chat extends BaseEntity {
+export class Message extends BaseEntity {
   @PrimaryGeneratedColumn("uuid")
   id: ID
 
-  @OneToMany(() => ChatMessage, message => message.chat)
-  messages: ChatMessage[]
+  @Column()
+  content: string
+
+  @Column({ default: false })
+  read: boolean
+
+  @ManyToOne(() => User)
+  from: User
+
+  @ManyToOne(() => User)
+  to: User
 
   @CreateDateColumn({ name: "created_at" })
   createdAt: Date
 
   @UpdateDateColumn({ name: "updated_at" })
   updatedAt: Date
+
+  static privateRoomFromUserIds = (ids: ID[]) => ids.join(",")
 }

@@ -47,13 +47,6 @@ export class User extends BaseEntity {
 
   @OneToMany(() => Rating, rating => rating.user)
   ratings: Rating[]
-  //  pets[Relação]
-  // fotos
-  // tipo
-  // ratings
-  // documentos[Se for anfitrião]
-  // bank_account[Se for anfitrião]
-  // passeios[Se for anfitrião]
 
   @CreateDateColumn({ name: "created_at" })
   public createdAt: Date

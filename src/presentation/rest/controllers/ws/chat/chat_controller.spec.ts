@@ -1,32 +1,67 @@
 import io from "socket.io-client"
-import * as connection from "../../../../../infra/database/support/connection"
 import { startSocketServer, startHttpServer } from "../../../server"
 import { env } from "../../../../../config/env"
 
-const API_URL = `http://localhost:${env.PORT}`
+import * as factory from "../../../../../infra/database/support/factory"
+import { User } from "../../../../../domain/entities/user_entity"
+import { Message } from "../../../../../domain/entities/message_entity"
 
-describe("Chat websocket controller functional test suite", () => {
-  beforeAll(async () => {
-    // await connection.create()
-    startSocketServer()
-    await startHttpServer()
-  })
-
-  test("who knows", done => {
-    const socket = io.connect(API_URL, {
+const connectSocket = () =>
+  new Promise<SocketIOClient.Socket>((resolve, reject) => {
+    const socket = io.connect(`${env.HOST}:${env.PORT}`, {
       transports: ["websocket", "polling"],
       secure: true,
       reconnection: true,
       rejectUnauthorized: false,
     })
 
-    socket.on("connect", () => console.log("connected"))
-    socket.on("connect_error", console.log)
-    socket.on("error", () => console.log("error"))
+    socket.on("connect", () => resolve(socket))
+    socket.on("connect_error", reject)
+    socket.on("error", reject)
+  })
 
-    socket.emit("message", { hello: "world" }, () => {
-      console.log("ccccc")
+const emit = (socket, event, data) =>
+  new Promise((resolve, reject) => {
+    socket.emit(event, data, resolve)
+    socket.on("error", reject)
+  })
+
+describe("[Socket] Chat controller functional test suite", () => {
+  beforeAll(async () => {
+    startSocketServer()
+    await startHttpServer()
+  })
+
+  test("can join a specific room with another user", async () => {
+    const userA = await factory.create(User)
+    const userB = await factory.create(User)
+
+    const socket = await connectSocket()
+
+    const room = Message.privateRoomFromUserIds([userA.id, userB.id])
+
+    const response = await emit(socket, "chat:join", { room })
+
+    expect(response).toEqual({ ok: true })
+  })
+
+  test("can send a message to a specific room", async done => {
+    const userA = await factory.create(User)
+    const userB = await factory.create(User)
+
+    const socketA = await connectSocket()
+    const socketB = await connectSocket()
+
+    const room = Message.privateRoomFromUserIds([userA.id, userB.id])
+
+    expect(await emit(socketA, "chat:join", { room })).toEqual({ ok: true })
+    expect(await emit(socketB, "chat:join", { room })).toEqual({ ok: true })
+
+    socketA.on("chat:message", message => {
+      expect(message).toEqual({ room, data: "hello world" })
       done()
     })
+
+    socketB.emit("chat:message", { room, data: "hello world" })
   })
 })

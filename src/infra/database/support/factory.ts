@@ -28,14 +28,17 @@ export const build = async (entity: unknown) => {
   return entityFactory()
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export const create = async (entity: any) => {
+export const create = async <U, P, T extends new (...args: U[]) => P>(
+  entity: T
+) => {
   const data = await build(entity)
 
-  const instance = await entity.create(data).save()
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const instance: InstanceType<T> = await (entity as any).create(data).save()
 
   if (data.password) {
-    instance.password = data.password
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    ;(instance as any).password = data.password
   }
 
   return instance
