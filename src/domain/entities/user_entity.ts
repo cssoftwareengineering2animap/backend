@@ -3,13 +3,14 @@ import {
   Entity,
   Column,
   PrimaryGeneratedColumn,
-  OneToOne,
   BaseEntity,
   OneToMany,
   CreateDateColumn,
   UpdateDateColumn,
   BeforeUpdate,
   BeforeInsert,
+  ManyToMany,
+  JoinTable,
 } from "typeorm"
 import { container } from "tsyringe"
 import { ID } from "../../core/types/id"
@@ -39,8 +40,9 @@ export class User extends BaseEntity {
   @Column({ select: false, nullable: false })
   password?: string
 
-  @OneToOne(() => File)
-  profilePicture: File
+  @ManyToMany(() => File)
+  @JoinTable()
+  pictures: File[]
 
   @OneToMany(() => Pet, pet => pet.owner)
   pets: Pet[]

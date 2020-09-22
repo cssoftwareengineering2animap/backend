@@ -11,6 +11,8 @@ export const globalErrorHandler = (
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   _next: NextFunction
 ) => {
+  console.error(error)
+
   if (error instanceof UnauthorizedError) {
     return response
       .status(StatusCodes.UNAUTHORIZED)

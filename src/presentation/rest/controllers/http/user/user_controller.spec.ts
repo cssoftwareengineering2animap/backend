@@ -130,4 +130,26 @@ describe("User controller functional test suite", () => {
       expect(response.body.data).toMatchObject(R.omit(["password"], user))
     })
   )
+
+  test.only(
+    "POST api/v1/users/pictures :: should be able to upload a profile picture",
+    runInTransaction(async () => {
+      const user = await factory.create(User)
+
+      const token = await request(app)
+        .post("/api/v1/login")
+        .send(user)
+        .expect(200)
+        .then(response => response.body.data.token)
+
+      const response = await request(app)
+        .post(`/api/v1/users/pictures`)
+        .set("Authorization", token)
+        .field("displayOrder", 0)
+        .attach("file", "test/fixtures/files/gohorse1.jpeg")
+        .expect(201)
+
+      console.log("aaaaa", response.body)
+    })
+  )
 })

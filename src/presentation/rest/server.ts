@@ -1,26 +1,39 @@
+/* eslint-disable */
 import "reflect-metadata"
+import * as container from "./container"
+container.register()
+
 import http, { Server } from "http"
 import express from "express"
 import cors from "cors"
 import socketio from "socket.io"
 import socketioRedisAdapter from "socket.io-redis"
 import { container as tsyringeContainer } from "tsyringe"
+import path from "path"
 import { env } from "../../config/env"
 import { loadRoutes } from "./utils/load_routes"
 import * as connection from "../../infra/database/support/connection"
 import { globalErrorHandler } from "./middlewares/global_error_handler"
-import * as container from "./container"
 import { ChatController } from "./controllers/ws/chat/chat_controller"
 import { AckFunction, Message } from "./controllers/ws/types"
+
+container.register()
 
 interface ServerStartResult {
   server: Server
   port: number | string
 }
 
-container.register()
-
-export const app = express().use(express.json()).use(cors())
+export const app = express()
+  .use(express.json())
+  .use(express.urlencoded({ extended: true }))
+  .use(cors())
+  .use(
+    "/public",
+    express.static(
+      path.resolve(__dirname, "..", "..", "..", "public")
+    )
+  )
 
 loadRoutes(app)
 
