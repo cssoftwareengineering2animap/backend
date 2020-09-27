@@ -5,8 +5,8 @@ import { CreateUserUseCase } from "../../../../../domain/usecases/user/create_us
 import { CreateUserDto } from "../../../../../domain/usecases/user/create_user/create_user_dto"
 import { envelope } from "../../../utils/envelope"
 import { validateDto } from "../../../../../core/utils/validate_dto"
-import { UploadUserPictureDto } from "../../../../../domain/usecases/user/upload_user_picture/upload_user_picture_dto"
 import { UploadUserPictureUseCase } from "../../../../../domain/usecases/user/upload_user_picture/upload_user_picture_use_case"
+import { FileUploadDto } from "../../../../../domain/usecases/dtos/file_upload_dto"
 
 @injectable()
 export class UserController {
@@ -27,8 +27,8 @@ export class UserController {
     return response.status(StatusCodes.CREATED).json(envelope(user))
   }
 
-  addProfilePicture = async (request: Request, response: Response) => {
-    const dto = new UploadUserPictureDto({
+  addPicture = async (request: Request, response: Response) => {
+    const dto = new FileUploadDto({
       name: request.file.originalname,
       key: request.file.filename,
       url: request.file.destination,
@@ -41,7 +41,7 @@ export class UserController {
       request.context.user,
       dto
     )
-    console.log("ccccccc", profilePicture)
+
     return response.status(StatusCodes.CREATED).json(envelope(profilePicture))
   }
 }

@@ -18,5 +18,5 @@ router.post(
   "/v1/users/pictures",
   authRequired,
   upload.single("file"),
-  withErrorHandler(userController.addProfilePicture)
+  withErrorHandler(userController.addPicture)
 )
