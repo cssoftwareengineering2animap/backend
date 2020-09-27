@@ -14,8 +14,8 @@ import {
 } from "typeorm"
 import { ID } from "../../core/types/id"
 import { File } from "./file_entity"
-import { User } from "./user_entity"
 import { Rating } from "./rating_entity"
+import { User } from "./user_entity"
 
 @Entity()
 export class Pet extends BaseEntity {
@@ -42,16 +42,17 @@ export class Pet extends BaseEntity {
 
   @ManyToMany(() => File)
   @JoinTable()
-  pictures: File[]
+  pictures: Promise<File[]>
   // passeios[Relação]
   // dono[Relação]
 
-  @OneToMany(() => Rating, rating => rating.pet)
-  ratings: Rating[]
+  @ManyToMany(() => Rating, rating => rating.pet)
+  @JoinTable()
+  ratings: Promise<Rating[]>
 
-  @CreateDateColumn({ name: "created_at" })
+  @CreateDateColumn({ name: "createdAt" })
   createdAt: Date
 
-  @UpdateDateColumn({ name: "updated_at" })
+  @UpdateDateColumn({ name: "updatedAt" })
   updatedAt: Date
 }

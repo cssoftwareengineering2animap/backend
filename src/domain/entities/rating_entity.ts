@@ -7,6 +7,7 @@ import {
   UpdateDateColumn,
   ManyToOne,
   Column,
+  ManyToMany,
 } from "typeorm"
 import { ID } from "../../core/types/id"
 import { User } from "./user_entity"
@@ -20,15 +21,18 @@ export class Rating extends BaseEntity {
   @Column()
   stars: number
 
-  @ManyToOne(() => User, user => user.ratings)
-  user: User
+  @ManyToMany(() => User, user => user.ratings)
+  user: User[]
 
-  @ManyToOne(() => Pet, pet => pet.ratings)
-  pet: Pet
+  @ManyToOne(() => User, user => user.gradings)
+  grader: User
 
-  @CreateDateColumn({ name: "created_at" })
+  @ManyToMany(() => Pet, pet => pet.ratings)
+  pet: Pet[]
+
+  @CreateDateColumn({ name: "createdAt" })
   createdAt: Date
 
-  @UpdateDateColumn({ name: "updated_at" })
+  @UpdateDateColumn({ name: "updatedAt" })
   updatedAt: Date
 }

@@ -28,10 +28,10 @@ export class Message extends BaseEntity {
   @ManyToOne(() => User)
   to: User
 
-  @CreateDateColumn({ name: "created_at" })
+  @CreateDateColumn({ name: "createdAt" })
   createdAt: Date
 
-  @UpdateDateColumn({ name: "updated_at" })
+  @UpdateDateColumn({ name: "updatedAt" })
   updatedAt: Date
 
   static privateRoomFromUserIds = (ids: ID[]) => ids.join(",")

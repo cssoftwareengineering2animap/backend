@@ -42,18 +42,22 @@ export class User extends BaseEntity {
 
   @ManyToMany(() => File)
   @JoinTable()
-  pictures: File[]
+  pictures: Promise<File[]>
 
   @OneToMany(() => Pet, pet => pet.owner)
-  pets: Pet[]
+  pets: Promise<Pet[]>
 
-  @OneToMany(() => Rating, rating => rating.user)
-  ratings: Rating[]
+  @ManyToMany(() => Rating, rating => rating.user)
+  @JoinTable()
+  ratings: Promise<Rating[]>
 
-  @CreateDateColumn({ name: "created_at" })
+  @OneToMany(() => Rating, rating => rating.grader)
+  gradings: Promise<Rating[]>
+
+  @CreateDateColumn({ name: "createdAt" })
   public createdAt: Date
 
-  @UpdateDateColumn({ name: "updated_at" })
+  @UpdateDateColumn({ name: "updatedAt" })
   public updatedAt: Date
 
   @BeforeUpdate()
