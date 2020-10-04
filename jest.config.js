@@ -1,10 +1,11 @@
 module.exports = {
+  rootDir: ".",
   globals: {
     "ts-jest": {
       tsConfig: "<rootDir>/tsconfig.json",
+      diagnostics: false,
     },
   },
-  rootDir: ".",
   testEnvironment: "node",
   testRegex: ".spec.ts$",
   transform: {
