@@ -1,0 +1,20 @@
+dist: trusty
+language: node_js
+node_js:
+  - "12"
+env:
+  global:
+    - JWT_SECRET=superjwtsecret
+    - SESSION_SECRET=supersessionsecret
+jobs:
+  fast_finish: true
+
+services:
+  - redis-server
+  - postgresql
+
+install:
+  - yarn
+
+script:
+  - "yarn test"

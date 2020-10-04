@@ -28,7 +28,7 @@ export class RedisSessionProvider implements SessionProvider {
 
   public create = async (userId: string) => {
     const sessionData = JSON.stringify({
-      user_id: userId,
+      userId,
       session_id: uuid.v4(),
       authenticated_at: moment().format("YYYY-MM-DD hh:mm:ss"),
     })
@@ -50,7 +50,7 @@ export class RedisSessionProvider implements SessionProvider {
       throw new ApplicationError(`Invalid session token: ${sessionToken}`)
     }
 
-    await this.redisProvider.del(this.sessionKeyFromUserId(sessionData.user_id))
+    await this.redisProvider.del(this.sessionKeyFromUserId(sessionData.userId))
   }
 
   public validateToken = async (
@@ -64,7 +64,7 @@ export class RedisSessionProvider implements SessionProvider {
     const sessionData = JSON.parse(sessionDataAsString)
 
     const session: SessionData | null = await this.redisProvider
-      .get(this.sessionKeyFromUserId(sessionData.user_id))
+      .get(this.sessionKeyFromUserId(sessionData.userId))
       .then(sessionAsString =>
         sessionAsString ? JSON.parse(sessionAsString) : null
       )

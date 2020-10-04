@@ -23,7 +23,7 @@ export const authRequired = async (
     return response.status(StatusCodes.UNAUTHORIZED).send()
   }
 
-  const user = await User.findOne({ id: sessionData.user_id })
+  const user = await User.findOne({ id: sessionData.userId })
 
   if (!user) {
     return response.status(StatusCodes.UNAUTHORIZED).send()

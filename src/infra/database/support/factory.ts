@@ -32,13 +32,19 @@ entityFactoryMap.set(File, (props?: Partial<File>) => ({
   ...props,
 }))
 
-entityFactoryMap.set(Rating, async (props?: Partial<Rating>) => ({
-  stars: faker.random.number({ min: 0, max: 5 }),
-  user: await create(User),
-  grader: await create(User),
-  pet: await create(Pet),
-  ...props,
-}))
+entityFactoryMap.set(Rating, async (props?: Partial<Rating>) => {
+  const user = await create(User)
+  const grader = await create(User)
+  const pet = await create(Pet, { owner: { id: user.id } })
+
+  return {
+    stars: faker.random.number({ min: 0, max: 5 }),
+    user,
+    grader,
+    pet,
+    ...props,
+  }
+})
 
 export const build = async <T>(entity: T, props?: unknown) => {
   const entityFactory = entityFactoryMap.get(entity)

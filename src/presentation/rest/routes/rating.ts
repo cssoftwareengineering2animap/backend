@@ -9,7 +9,7 @@ export const router = Router()
 const ratingController = container.resolve(RatingController)
 
 router.post(
-  "/v1/users/:user_id/ratings",
+  "/v1/users/:userId/ratings",
   authRequired,
   withErrorHandler(ratingController.rateUser)
 )

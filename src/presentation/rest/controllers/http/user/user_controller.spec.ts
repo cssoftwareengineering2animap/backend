@@ -6,6 +6,7 @@ import * as factory from "../../../../../infra/database/support/factory"
 import * as connection from "../../../../../infra/database/support/connection"
 import { User } from "../../../../../domain/entities/user_entity"
 import { File } from "../../../../../domain/entities/file_entity"
+import * as userTestUtils from "../../../../../../test/utils/login"
 
 describe("User controller functional test suite", () => {
   beforeAll(connection.create)
@@ -108,11 +109,7 @@ describe("User controller functional test suite", () => {
   test("POST api/v1/users/pictures :: should be able to upload profile pictures", async () => {
     const user = await factory.create(User)
 
-    const token = await request(app)
-      .post("/api/v1/login")
-      .send(user)
-      .expect(200)
-      .then(response => response.body.data.token)
+    const token = await userTestUtils.login({ app, user })
 
     const response = await request(app)
       .post(`/api/v1/users/pictures`)
@@ -143,11 +140,7 @@ describe("User controller functional test suite", () => {
       )
     )
 
-    const token = await request(app)
-      .post("/api/v1/login")
-      .send({ email, password })
-      .expect(200)
-      .then(response => response.body.data.token)
+    const token = await userTestUtils.login({ app, user: { email, password } })
 
     const response = await request(app)
       .post(`/api/v1/users/pictures`)
@@ -157,5 +150,18 @@ describe("User controller functional test suite", () => {
       .expect(400)
 
     expect(response.body).toEqual([{ message: "Limite de fotos excedido" }])
+  })
+
+  test("POST api/v1/users/:userId/blocked_users :: one user should be able to block another user", async () => {
+    const user = await factory.create(User)
+
+    const userThatWillBeBlocked = await factory.create(User)
+
+    const token = await userTestUtils.login({ app, user })
+
+    await request(app)
+      .post(`/api/v1/users/${userThatWillBeBlocked.id}/blocked_users`)
+      .set("Authorization", token)
+      .expect(200)
   })
 })

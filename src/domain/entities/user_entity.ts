@@ -18,6 +18,7 @@ import { File } from "./file_entity"
 import { Pet } from "./pet_entity"
 import { EncryptionProvider } from "../providers/encryption_provider"
 import { Rating } from "./rating_entity"
+import { UserBlocking } from "./user_blocking_entity"
 
 const encryptionProvider = container.resolve<EncryptionProvider>(
   "EncryptionProvider"
@@ -53,6 +54,9 @@ export class User extends BaseEntity {
 
   @OneToMany(() => Rating, rating => rating.grader)
   gradings: Promise<Rating[]>
+
+  @OneToMany(() => UserBlocking, blocking => blocking.blocker)
+  blocks: Promise<UserBlocking[]>
 
   @CreateDateColumn({ name: "createdAt" })
   public createdAt: Date

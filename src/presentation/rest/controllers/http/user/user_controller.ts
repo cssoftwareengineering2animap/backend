@@ -7,6 +7,8 @@ import { envelope } from "../../../utils/envelope"
 import { validateDto } from "../../../../../core/utils/validate_dto"
 import { UploadUserPictureUseCase } from "../../../../../domain/usecases/user/upload_user_picture/upload_user_picture_use_case"
 import { FileUploadDto } from "../../../../../domain/usecases/dtos/file_upload_dto"
+import { BlockUserDto } from "../../../../../domain/usecases/user/block_user/block_user_dto"
+import { BlockUserUseCase } from "../../../../../domain/usecases/user/block_user/block_user_use_case"
 
 @injectable()
 export class UserController {
@@ -14,7 +16,9 @@ export class UserController {
     @inject(CreateUserUseCase)
     private readonly createUserUseCase: CreateUserUseCase,
     @inject(UploadUserPictureUseCase)
-    private readonly uploadUserPictureUseCase: UploadUserPictureUseCase
+    private readonly uploadUserPictureUseCase: UploadUserPictureUseCase,
+    @inject(BlockUserUseCase)
+    private readonly blockUserUseCase: BlockUserUseCase
   ) {}
 
   createUser = async (request: Request, response: Response) => {
@@ -43,5 +47,18 @@ export class UserController {
     )
 
     return response.status(StatusCodes.CREATED).json(envelope(profilePicture))
+  }
+
+  blockUser = async (request: Request, response: Response) => {
+    const dto = new BlockUserDto({
+      user: request.context.user,
+      userThatWillBeBlockedId: request.params.userId,
+    })
+
+    await validateDto(dto)
+
+    await this.blockUserUseCase.execute(dto)
+
+    return response.status(StatusCodes.OK).send()
   }
 }

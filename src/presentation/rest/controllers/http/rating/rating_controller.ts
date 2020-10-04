@@ -16,7 +16,7 @@ export class RatingController {
 
   rateUser = async (request: Request, response: Response) => {
     const dto = new RateUserDto({
-      user: request.params.user_id,
+      user: request.params.userId,
       grader: request.context.user,
       stars: request.body.stars,
     })

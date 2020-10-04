@@ -20,8 +20,8 @@ export class PetController {
     private readonly uploadPetPictureUseCase: UploadPetPictureUseCase
   ) {}
 
-  getPets = async (request: Request, response: Response) => {
-    const pets = await this.getPetsUseCase.execute(request.params.user_id)
+  getUserPets = async (request: Request, response: Response) => {
+    const pets = await this.getPetsUseCase.execute(request.params.userId)
 
     return response.json(envelope(pets))
   }
@@ -48,7 +48,7 @@ export class PetController {
 
     const profilePicture = await this.uploadPetPictureUseCase.execute(
       request.context.user,
-      request.params.pet_id,
+      request.params.petId,
       dto
     )
 

@@ -3,7 +3,7 @@ import { ID } from "../../core/types/id"
 export type SessionToken = string
 
 export type SessionData = {
-  user_id: ID
+  userId: ID
   session_id: ID
   authenticated_at: string
 }
