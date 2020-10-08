@@ -6,6 +6,11 @@ node_js:
 env:
   - DOCKER_COMPOSE_VERSION=1.25.0
 
+branchs:
+  only:
+    - master
+    - develop
+
 before_install:
   - sudo rm /usr/local/bin/docker-compose
   - curl -L https://github.com/docker/compose/releases/download/${DOCKER_COMPOSE_VERSION}/docker-compose-`uname -s`-`uname -m` > docker-compose
@@ -21,6 +26,7 @@ jobs:
 
 install:
   - docker-compose up -d
+  - sleep 10
   - yarn
 
 script:
