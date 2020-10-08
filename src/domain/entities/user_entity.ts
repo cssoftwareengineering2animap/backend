@@ -56,7 +56,10 @@ export class User extends BaseEntity {
   gradings: Promise<Rating[]>
 
   @OneToMany(() => UserBlocking, blocking => blocking.blocker)
-  blocks: Promise<UserBlocking[]>
+  blockedUsers: Promise<UserBlocking[]>
+
+  @OneToMany(() => UserBlocking, blocking => blocking.blocked)
+  blockedByUsers: Promise<UserBlocking[]>
 
   @CreateDateColumn({ name: "createdAt" })
   public createdAt: Date
@@ -73,4 +76,15 @@ export class User extends BaseEntity {
 
     this.password = await encryptionProvider.hash(this.password)
   }
+
+  public isUserBlocked = (user: User | ID) =>
+    UserBlocking.createQueryBuilder("blocking")
+      .innerJoinAndSelect("blocking.blocker", "blocker")
+      .innerJoinAndSelect("blocking.blocked", "blocked")
+      .where("blocker.id = :blockerId and blocked.id = :blockedId", {
+        blockerId: this.id,
+        blockedId: typeof user === "string" ? user : user.id,
+      })
+      .getOne()
+      .then(Boolean)
 }

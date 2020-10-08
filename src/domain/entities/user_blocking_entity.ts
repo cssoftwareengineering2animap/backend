@@ -1,10 +1,11 @@
+/* eslint-disable import/no-cycle */
 import {
   Entity,
   PrimaryGeneratedColumn,
   BaseEntity,
-  OneToMany,
   CreateDateColumn,
   UpdateDateColumn,
+  ManyToOne,
   OneToOne,
 } from "typeorm"
 import { ID } from "../../core/types/id"
@@ -15,10 +16,10 @@ export class UserBlocking extends BaseEntity {
   @PrimaryGeneratedColumn("uuid")
   id: ID
 
-  @OneToMany(() => User, user => user.blocks)
+  @ManyToOne(() => User, user => user.blockedUsers, { cascade: true })
   blocker: User
 
-  @OneToOne(() => User)
+  @ManyToOne(() => User, user => user.blockedByUsers, { cascade: true })
   blocked: User
 
   @CreateDateColumn({ name: "createdAt" })

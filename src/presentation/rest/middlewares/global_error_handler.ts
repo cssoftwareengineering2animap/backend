@@ -3,6 +3,7 @@ import { StatusCodes } from "http-status-codes"
 import { ApplicationError } from "../../../core/errors/application_error"
 import { ValidationError } from "../../../core/errors/validation_error"
 import { UnauthorizedError } from "../../../core/errors/unauthorized_error"
+import { ForbiddenError } from "../../../core/errors/forbidden_error"
 
 export const globalErrorHandler = (
   error: unknown,
@@ -11,12 +12,14 @@ export const globalErrorHandler = (
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   _next: NextFunction
 ) => {
+  if (error instanceof ForbiddenError) {
+    return response.status(StatusCodes.FORBIDDEN).send()
+  }
   if (error instanceof UnauthorizedError) {
     return response
       .status(StatusCodes.UNAUTHORIZED)
       .json([{ message: error.message }])
   }
-
   if (error instanceof ValidationError) {
     return response.status(StatusCodes.BAD_REQUEST).json(error.errors)
   }
@@ -25,6 +28,8 @@ export const globalErrorHandler = (
       .status(StatusCodes.INTERNAL_SERVER_ERROR)
       .json([{ message: error.message }])
   }
+
+  console.error(error)
 
   return response.status(StatusCodes.INTERNAL_SERVER_ERROR).send()
 }

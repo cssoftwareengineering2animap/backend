@@ -6,7 +6,7 @@ import { User } from "../../../../../domain/entities/user_entity"
 import { Rating } from "../../../../../domain/entities/rating_entity"
 import * as userTestUtils from "../../../../../../test/utils/login"
 
-describe.skip("User controller functional test suite", () => {
+describe("User controller functional test suite", () => {
   beforeAll(connection.create)
   beforeEach(connection.clear)
 
@@ -14,8 +14,6 @@ describe.skip("User controller functional test suite", () => {
     const rating = await factory.build(Rating, { stars: -1 })
 
     const token = await userTestUtils.login({ app, user: rating.grader })
-
-    console.log("ccccc rating", rating)
 
     const response = await request(app)
       .post(`/api/v1/users/${rating.user.id}/ratings`)

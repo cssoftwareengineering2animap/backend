@@ -13,5 +13,5 @@ export class GetPetsDto {
   user: User
 
   @IsNotEmpty({ message: "O usuário que é dono dos pets deve ser informado" })
-  userThatPetsBelongTo: ID
+  userIdThatPetsBelongTo: ID
 }

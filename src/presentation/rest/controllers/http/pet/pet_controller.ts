@@ -21,7 +21,10 @@ export class PetController {
   ) {}
 
   getUserPets = async (request: Request, response: Response) => {
-    const pets = await this.getPetsUseCase.execute(request.params.userId)
+    const pets = await this.getPetsUseCase.execute({
+      user: request.context.user,
+      userIdThatPetsBelongTo: request.params.userId,
+    })
 
     return response.json(envelope(pets))
   }
