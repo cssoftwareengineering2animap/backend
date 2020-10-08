@@ -1,12 +1,20 @@
 import { injectable } from "tsyringe"
 import { Pet } from "../../../entities/pet_entity"
 import { edge } from "../../../../core/utils/edge"
-import { ID } from "../../../../core/types/id"
+import { GetPetsDto } from "./get_pets_dto"
+import { User } from "../../../entities/user_entity"
+import { ForbiddenError } from "../../../../core/errors/forbidden_error"
 
 @injectable()
 export class GetPetsUseCase {
-  execute = async (userId: ID) => {
-    const pets = await Pet.find({ where: { owner: { id: userId } } })
+  execute = async ({ user, userIdThatPetsBelongTo }: GetPetsDto) => {
+    const userThatOwnsPets = await User.findOneOrFail(userIdThatPetsBelongTo)
+
+    if (await userThatOwnsPets.isUserBlocked(user)) {
+      throw new ForbiddenError()
+    }
+
+    const pets = await Pet.find({ where: { owner: userThatOwnsPets } })
 
     return pets.map(edge)
   }

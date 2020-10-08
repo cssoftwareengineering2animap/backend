@@ -9,7 +9,7 @@ import { Pet } from "../../../../../domain/entities/pet_entity"
 import { File } from "../../../../../domain/entities/file_entity"
 import * as userTestUtils from "../../../../../../test/utils/login"
 
-describe.skip("Pet controller functional test suite", () => {
+describe("Pet controller functional test suite", () => {
   beforeAll(connection.create)
   beforeEach(connection.clear)
 
@@ -190,29 +190,19 @@ describe.skip("Pet controller functional test suite", () => {
     expect(response.body).toEqual([{ message: "Limite de fotos excedido" }])
   })
 
-  describe("GET api/v1/users/:userId/pets :: as a blocked user", () => {
-    const createUsers = async () => {
+  describe("GET api/v1/users/:userId/pets :: when the user is blocked", () => {
+    test("GET api/v1/users/:userId/pets :: should not be able to fetch the pets that belong to user that blocked him/her", async () => {
       const blocker = await factory.create(User)
       const blocked = await factory.create(User)
 
-      const token = await userTestUtils.login({ app, user: blocker })
-
       await request(app)
         .post(`/api/v1/users/${blocked.id}/blocked_users`)
-        .set("Authorization", token)
+        .set("Authorization", await userTestUtils.login({ app, user: blocker }))
         .expect(200)
-
-      return { blocker, blocked }
-    }
-
-    test("GET api/v1/users/:userId/pets :: when the user is blocked, the user should be able to fetch the pets that belong to user that blocked him/her", async () => {
-      const { blocker, blocked } = await createUsers()
-
-      const token = await userTestUtils.login({ app, user: blocked })
 
       await request(app)
         .get(`/api/v1/users/${blocker.id}/pets`)
-        .set("Authorization", token)
+        .set("Authorization", await userTestUtils.login({ app, user: blocked }))
         .expect(403)
     })
   })
