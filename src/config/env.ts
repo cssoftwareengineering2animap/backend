@@ -17,6 +17,7 @@ const keys = [
   "REDIS_CHAT_HOST",
   "REDIS_CHAT_PORT",
   "REDIS_CHAT_PASSWORD",
+  "PASSWORD_RECOVERY_TOKEN_EXPIRATION_IN_SECONDS",
 ] as const
 
 export const env = Object.fromEntries(keys.map(key => [key, get(key)])) as {
