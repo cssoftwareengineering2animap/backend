@@ -4,6 +4,7 @@ import { ValidationError } from "../../../../core/errors/validation_error"
 import { User } from "../../../entities/user_entity"
 import { RedisProvider } from "../../../../infra/providers/redis/redis_provider"
 import { RequestForgotPasswordTokenDto } from "./request_forgot_password_token_dto"
+import { env } from "../../../../config/env"
 
 @injectable()
 export class RequestForgotPasswordTokenUseCase {
@@ -21,7 +22,11 @@ export class RequestForgotPasswordTokenUseCase {
 
     const token = cuid.slug().toUpperCase()
 
-    await this.redisProvider.setex(token, 100, user.id)
+    await this.redisProvider.setex(
+      token,
+      Number(env.PASSWORD_RECOVERY_TOKEN_EXPIRATION_IN_SECONDS),
+      user.id
+    )
 
     return token
   }
