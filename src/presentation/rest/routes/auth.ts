@@ -8,3 +8,13 @@ export const router = Router()
 const authController = container.resolve(AuthController)
 
 router.post("/v1/login", withErrorHandler(authController.login))
+
+router.post(
+  "/v1/forgot_password",
+  withErrorHandler(authController.requestForgotPasswordToken)
+)
+
+router.patch(
+  "/v1/forgot_password",
+  withErrorHandler(authController.resetPasswordWithForgotPasswordToken)
+)
