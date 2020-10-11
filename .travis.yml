@@ -16,8 +16,8 @@ jobs:
   fast_finish: true
   include:
     - stage: test
-      script: ./run_tests
+      script: ./run_tests.sh
     - stage: publish docker image
-      script: ./publish_docker_image
+      script: ./publish_docker_image.sh
     - stage: deploy
-      script: ./deploy
+      script: ./deploy.sh
