@@ -38,4 +38,4 @@ script:
   - docker login --username=$HEROKU_USERNAME --password=$HEROKU_AUTH_TOKEN registry.heroku.com
   - docker tag $DOCKER_USERNAME/animap:latest registry.heroku.com/animap-backend-prod/web
   - docker push registry.heroku.com/animap-backend-prod/web
-  - heroku container:release web
+  - heroku container:release web --app animap-backend-prod
