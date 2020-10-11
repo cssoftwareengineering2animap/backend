@@ -43,6 +43,7 @@ jobs:
         - sudo docker build -t $DOCKER_USERNAME/animap:$TRAVIS_COMMIT .
         - docker images
         - docker push $DOCKER_USERNAME/animap:$TRAVIS_COMMIT
+        - docker push $DOCKER_USERNAME/animap:latest
     - stage: deploy
       script:
         - docker login -u "$HEROKU_USERNAME" --password=$(HEROKU_AUTH_TOKEN) registry.heroku.com
