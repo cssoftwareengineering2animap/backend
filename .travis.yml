@@ -32,3 +32,17 @@ script:
 
 after_script:
   - docker-compose stop
+
+jobs:
+  fast_finish: true
+  include:
+    - stage: publish docker image
+      script:
+        - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
+        - docker build -t $DOCKER_USERNAME/animap:$TRAVIS_COMMIT .
+        - docker images
+        - docker push $DOCKER_USERNAME/animap:$TRAVIS_COMMIT
+    - stage: deploy
+      script:
+        - docker login -u "$HEROKU_USERNAME" --password=$(HEROKU_AUTH_TOKEN) registry.heroku.com
+        - heroku container:release web --app animap-backend-prod
