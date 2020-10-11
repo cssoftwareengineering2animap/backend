@@ -12,40 +12,12 @@ branches:
     - master
     - develop
 
-before_install:
-  - sudo rm /usr/local/bin/docker-compose
-  - curl -L https://github.com/docker/compose/releases/download/${DOCKER_COMPOSE_VERSION}/docker-compose-`uname -s`-`uname -m` > docker-compose
-  - chmod +x docker-compose
-  - sudo mv docker-compose /usr/local/bin
-  - curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
-  - sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
-  - sudo apt-get update
-  - sudo apt-get -y -o Dpkg::Options::="--force-confnew" install docker-ce
-  - wget -qO- https://toolbelt.heroku.com/install.sh | sh
-
-install:
-  - docker-compose up -d
-  - sleep 5
-  - yarn
-
-after_script:
-  - docker-compose stop
-
 jobs:
   fast_finish: true
   include:
     - stage: test
-      script:
-        - yarn test
+      script: ./run_tests
     - stage: publish docker image
-      script:
-        - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
-        - sudo docker build -t $DOCKER_USERNAME/animap:$TRAVIS_COMMIT .
-        - docker tag $DOCKER_USERNAME/animap:$TRAVIS_COMMIT $DOCKER_USERNAME/animap:latest
-        - docker images
-        - docker push $DOCKER_USERNAME/animap:$TRAVIS_COMMIT
-        - docker push $DOCKER_USERNAME/animap:latest
+      script: ./publish_docker_image
     - stage: deploy
-      script:
-        - docker login -u "$HEROKU_USERNAME" --password=$(HEROKU_AUTH_TOKEN) registry.heroku.com
-        - heroku container:release web --app animap-backend-prod
+      script: ./deploy
