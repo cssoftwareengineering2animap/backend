@@ -48,5 +48,5 @@ script:
   - docker push $DOCKER_USERNAME/animap:$TRAVIS_COMMIT
   - docker push $DOCKER_USERNAME/animap:latest
 
-  - docker login -u "$HEROKU_USERNAME" --password=$(HEROKU_AUTH_TOKEN) registry.heroku.com
+  - docker login -u "$HEROKU_USERNAME" --password=$HEROKU_AUTH_TOKEN registry.heroku.com
   - heroku container:release web --app animap-backend-prod
