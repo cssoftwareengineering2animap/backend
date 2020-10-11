@@ -1,5 +1,6 @@
 dist: trusty
 language: node_js
+sudo: required
 node_js:
   - "14"
 
@@ -22,13 +23,19 @@ before_install:
   - sudo apt-get -y -o Dpkg::Options::="--force-confnew" install docker-ce
   - wget -qO- https://toolbelt.heroku.com/install.sh | sh
 
-install:
-  - docker-compose up -d
-  - sleep 10
-  - yarn
-
 script:
+  - docker-compose up -d
+  - yarn
   - yarn test
 
-after_script:
-  - docker-compose stop
+  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
+  - sudo docker build -t $DOCKER_USERNAME/animap:$TRAVIS_COMMIT .
+  - docker tag $DOCKER_USERNAME/animap:$TRAVIS_COMMIT $DOCKER_USERNAME/animap:latest
+  - docker images
+  - docker push $DOCKER_USERNAME/animap:$TRAVIS_COMMIT
+  - docker push $DOCKER_USERNAME/animap:latest
+
+  - echo "$HEROKU_API_KEY" | docker login -u "$HEROKU_USERNAME" --password-stdin registry.heroku.com
+  - docker tag $DOCKER_USERNAME/animap:latest registry.heroku.com/animap-backend-prod/web
+  - docker push registry.heroku.com/animap-backend-prod/web
+  - HEROKU_API_KEY=$HEROKU_API_KEY heroku container:release web --app animap-backend-prod
