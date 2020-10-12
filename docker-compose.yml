@@ -18,7 +18,7 @@ services:
   animap_redis_dev:
     container_name: animap_redis_dev
     image: redis
-    command: redis-server --requirepass password
+    command: redis-server
     ports:
       - 6379:6379
     volumes:
