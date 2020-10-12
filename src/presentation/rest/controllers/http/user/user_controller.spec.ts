@@ -51,35 +51,6 @@ describe("User controller functional test suite", () => {
     expect(response.body[0].message).toBe("O nome deve ser informado")
   })
 
-  test("POST api/v1/users :: when phone is invalid, should fail with an error message", async () => {
-    const user = await factory.build(User)
-    user.phone = "123"
-
-    const response = await request(app)
-      .post("/api/v1/users")
-      .send(user)
-      .expect(400)
-
-    expect(response.body).toEqual([
-      { message: "O telefone deve ter no mínimo 10 dígitos" },
-    ])
-  })
-
-  test("POST api/v1/users :: when phone is already in use, should fail with an error message", async () => {
-    const { phone } = await factory.create(User)
-
-    const user = await factory.build(User)
-
-    user.phone = phone
-
-    const response = await request(app)
-      .post("/api/v1/users")
-      .send(user)
-      .expect(400)
-
-    expect(response.body).toEqual([{ message: "Esse telefone já está em uso" }])
-  })
-
   test("POST api/v1/users :: when password is too short, should fail with an error message", async () => {
     const user = await factory.build(User)
     user.password = "short"

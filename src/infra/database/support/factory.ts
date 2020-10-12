@@ -12,7 +12,6 @@ entityFactoryMap.set(User, (props?: Partial<User>) => ({
   name: faker.internet.userName(),
   email: faker.internet.email(),
   password: faker.internet.password(),
-  phone: faker.phone.phoneNumberFormat(0).replace(/-/g, ""),
   ...props,
 }))
 
