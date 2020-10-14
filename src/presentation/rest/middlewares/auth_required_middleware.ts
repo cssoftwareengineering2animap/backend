@@ -1,7 +1,10 @@
 import { container } from "tsyringe"
 import { StatusCodes } from "http-status-codes"
 import { Request, Response, NextFunction } from "express"
-import { SessionProvider } from "../../../domain/providers/session_provider"
+import {
+  SessionProvider,
+  SessionProviderToken,
+} from "../../../domain/providers/session_provider"
 import { User } from "../../../domain/entities/user_entity"
 
 export const authRequired = async (
@@ -13,7 +16,9 @@ export const authRequired = async (
     return response.status(StatusCodes.UNAUTHORIZED).send()
   }
 
-  const sessionProvider = container.resolve<SessionProvider>("SessionProvider")
+  const sessionProvider = container.resolve<SessionProvider>(
+    SessionProviderToken
+  )
 
   const sessionData = await sessionProvider.validateToken(
     request.headers.authorization

@@ -7,7 +7,10 @@ import {
   SessionData,
 } from "../../../domain/providers/session_provider"
 import { ID } from "../../../core/types/id"
-import { EncryptionProvider } from "../../../domain/providers/encryption_provider"
+import {
+  EncryptionProvider,
+  EncryptionProviderToken,
+} from "../../../domain/providers/encryption_provider"
 import { ApplicationError } from "../../../core/errors/application_error"
 import { RedisProvider } from "../redis/redis_provider"
 import { User } from "../../../domain/entities/user_entity"
@@ -17,7 +20,7 @@ const ONE_WEEK_IN_SECONDS = 604800
 @injectable()
 export class RedisSessionProvider implements SessionProvider {
   constructor(
-    @inject("EncryptionProvider")
+    @inject(EncryptionProviderToken)
     private readonly encryptionProvider: EncryptionProvider,
     @inject(RedisProvider)
     private readonly redisProvider: RedisProvider

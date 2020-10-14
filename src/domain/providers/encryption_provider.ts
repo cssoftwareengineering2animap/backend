@@ -4,3 +4,5 @@ export interface EncryptionProvider {
   encrypt: (value: string) => string
   decrypt: (encryptedValue: string) => string | null
 }
+
+export const EncryptionProviderToken = Symbol.for("EncryptionProvider")

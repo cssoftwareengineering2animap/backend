@@ -16,12 +16,15 @@ import { container } from "tsyringe"
 import { ID } from "../../core/types/id"
 import { File } from "./file_entity"
 import { Pet } from "./pet_entity"
-import { EncryptionProvider } from "../providers/encryption_provider"
+import {
+  EncryptionProvider,
+  EncryptionProviderToken,
+} from "../providers/encryption_provider"
 import { Rating } from "./rating_entity"
 import { UserBlocking } from "./user_blocking_entity"
 
 const encryptionProvider = container.resolve<EncryptionProvider>(
-  "EncryptionProvider"
+  EncryptionProviderToken
 )
 
 @Entity()
