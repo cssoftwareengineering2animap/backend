@@ -2,7 +2,10 @@ import { inject, injectable } from "tsyringe"
 import { ValidationError } from "../../../../core/errors/validation_error"
 import { RedisProvider } from "../../../../infra/providers/redis/redis_provider"
 import { User } from "../../../entities/user_entity"
-import { SessionProvider } from "../../../providers/session_provider"
+import {
+  SessionProvider,
+  SessionProviderToken,
+} from "../../../providers/session_provider"
 import { ResetPasswordWithForgotPasswordTokenDto } from "./reset_password_with_forgot_password_token_dto"
 
 @injectable()
@@ -10,7 +13,7 @@ export class ResetPasswordWithForgotPasswordTokenUseCase {
   constructor(
     @inject(RedisProvider)
     private readonly redisProvider: RedisProvider,
-    @inject("SessionProvider")
+    @inject(SessionProviderToken)
     private readonly sessionProvider: SessionProvider
   ) {}
 

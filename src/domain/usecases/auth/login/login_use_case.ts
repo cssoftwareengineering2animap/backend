@@ -1,16 +1,22 @@
 import { injectable, inject } from "tsyringe"
 import { User } from "../../../entities/user_entity"
-import { EncryptionProvider } from "../../../providers/encryption_provider"
+import {
+  EncryptionProvider,
+  EncryptionProviderToken,
+} from "../../../providers/encryption_provider"
 import { LoginDto } from "./login_dto"
 import { UnauthorizedError } from "../../../../core/errors/unauthorized_error"
-import { SessionProvider } from "../../../providers/session_provider"
+import {
+  SessionProvider,
+  SessionProviderToken,
+} from "../../../providers/session_provider"
 
 @injectable()
 export class LoginUseCase {
   constructor(
-    @inject("SessionProvider")
+    @inject(SessionProviderToken)
     private readonly sessionProvider: SessionProvider,
-    @inject("EncryptionProvider")
+    @inject(EncryptionProviderToken)
     private readonly encryptionProvider: EncryptionProvider
   ) {}
 

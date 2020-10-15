@@ -18,6 +18,8 @@ const keys = [
   "REDIS_CHAT_PORT",
   "REDIS_CHAT_PASSWORD",
   "PASSWORD_RECOVERY_TOKEN_EXPIRATION_IN_SECONDS",
+  "MAILGUN_API_KEY",
+  "MAILGUN_DOMAIN",
 ] as const
 
 export const env = Object.fromEntries(keys.map(key => [key, get(key)])) as {

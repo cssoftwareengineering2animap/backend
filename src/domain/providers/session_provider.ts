@@ -15,3 +15,5 @@ export interface SessionProvider {
   validateToken: (sessionToken: SessionToken) => Promise<SessionData | null>
   destroyUserSessions: (user: User | ID) => Promise<void>
 }
+
+export const SessionProviderToken = Symbol.for("SessionProvider")
