@@ -1,4 +1,6 @@
 import "reflect-metadata"
+// eslint-disable-next-line import/no-extraneous-dependencies
+import "dotenv/config"
 import fs from "fs"
 import * as container from "./src/presentation/rest/container"
 
