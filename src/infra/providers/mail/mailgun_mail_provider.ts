@@ -1,4 +1,4 @@
-import { injectable } from "tsyringe"
+import { singleton } from "tsyringe"
 import mailgun from "mailgun-js"
 import { env } from "../../../config/env"
 import {
@@ -11,14 +11,27 @@ const mg = mailgun({
   domain: env.MAILGUN_DOMAIN,
 })
 
-@injectable()
+@singleton()
 export class MailgunMailProvider implements MailProvider {
-  send = (options: SendMailOptions) =>
-    new Promise<void>((resolve, reject) =>
-      mg
-        .messages()
-        .send({ ...options, html: options.body }, error =>
-          error ? reject(error) : resolve()
-        )
-    )
+  public mailbox: SendMailOptions[] = []
+
+  private faked = false
+
+  send = async (options: SendMailOptions) => {
+    if (this.faked) {
+      this.mailbox.push(options)
+      return
+    }
+    await mg.messages().send({ ...options, html: options.body })
+  }
+
+  fake = () => {
+    this.mailbox = []
+    this.faked = true
+  }
+
+  restore = () => {
+    this.mailbox = []
+    this.faked = false
+  }
 }
