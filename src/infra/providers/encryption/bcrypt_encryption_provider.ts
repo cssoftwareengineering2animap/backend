@@ -1,6 +1,6 @@
 import * as bcrypt from "bcrypt"
 import crypto from "crypto"
-import { injectable } from "tsyringe"
+import { singleton } from "tsyringe"
 import { EncryptionProvider } from "../../../domain/providers/encryption_provider"
 import { env } from "../../../config/env"
 
@@ -11,7 +11,7 @@ const config = {
   alg: "aes256",
 }
 
-@injectable()
+@singleton()
 export class BcryptEncryptionProvider implements EncryptionProvider {
   public hash = (value: string) => bcrypt.hash(value, SALT_ROUNDS)
 

@@ -1,5 +1,5 @@
 import * as uuid from "uuid"
-import { inject, injectable } from "tsyringe"
+import { inject, singleton } from "tsyringe"
 import moment from "moment"
 import {
   SessionProvider,
@@ -17,7 +17,7 @@ import { User } from "../../../domain/entities/user_entity"
 
 const ONE_WEEK_IN_SECONDS = 604800
 
-@injectable()
+@singleton()
 export class RedisSessionProvider implements SessionProvider {
   constructor(
     @inject(EncryptionProviderToken)

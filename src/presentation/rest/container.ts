@@ -8,7 +8,7 @@ import { RedisSessionProvider } from "../../infra/providers/session/redis_sessio
 
 export const register = () => {
   container.register(EncryptionProviderToken, {
-    useClass: BcryptEncryptionProvider,
+    useValue: container.resolve(BcryptEncryptionProvider),
   })
 
   container.register(SessionProviderToken, {
@@ -16,6 +16,6 @@ export const register = () => {
   })
 
   container.register(MailProviderToken, {
-    useClass: MailgunMailProvider,
+    useValue: container.resolve(MailgunMailProvider),
   })
 }

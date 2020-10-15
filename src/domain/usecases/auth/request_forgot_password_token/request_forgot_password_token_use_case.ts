@@ -5,12 +5,17 @@ import { User } from "../../../entities/user_entity"
 import { RedisProvider } from "../../../../infra/providers/redis/redis_provider"
 import { RequestForgotPasswordTokenDto } from "./request_forgot_password_token_dto"
 import { env } from "../../../../config/env"
+import {
+  MailProvider,
+  MailProviderToken,
+} from "../../../providers/mail_provider"
 
 @injectable()
 export class RequestForgotPasswordTokenUseCase {
   constructor(
     @inject(RedisProvider)
-    private readonly redisProvider: RedisProvider
+    private readonly redisProvider: RedisProvider,
+    @inject(MailProviderToken) private readonly mailProvider: MailProvider
   ) {}
 
   execute = async ({ email }: RequestForgotPasswordTokenDto) => {
@@ -28,6 +33,11 @@ export class RequestForgotPasswordTokenUseCase {
       user.id
     )
 
-    return token
+    await this.mailProvider.send({
+      from: "naorespondae@animap.com.br",
+      to: user.email,
+      subject: `Animap - Seu código é ${token}`,
+      body: `<h1>Seu código de recuperação de senha é ${token}</h1>`,
+    })
   }
 }

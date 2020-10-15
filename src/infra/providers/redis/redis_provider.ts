@@ -1,10 +1,10 @@
-import { injectable } from "tsyringe"
+import { singleton } from "tsyringe"
 import Redis from "ioredis"
 import * as R from "ramda"
 import { connections } from "../../../config/redis"
 import { ApplicationError } from "../../../core/errors/application_error"
 
-@injectable()
+@singleton()
 export class RedisProvider {
   private redisConnections: Record<string, Redis.Redis>
 
