@@ -7,7 +7,7 @@ import * as connection from "../../../../../infra/database/support/connection"
 import { User } from "../../../../../domain/entities/user_entity"
 import { Pet } from "../../../../../domain/entities/pet_entity"
 import { File } from "../../../../../domain/entities/file_entity"
-import * as userTestUtils from "../../../../../../test/utils/login"
+import * as authTestUtils from "../../../../../../test/utils/auth"
 
 describe("Pet controller functional test suite", () => {
   beforeAll(connection.create)
@@ -16,7 +16,7 @@ describe("Pet controller functional test suite", () => {
   test("POST api/v1/users/:userId/pets :: when name is too short, should return an error message", async () => {
     const user = await factory.create(User)
 
-    const token = await userTestUtils.login({ app, user })
+    const token = await authTestUtils.login({ app, client: user })
 
     const pet = await factory.build(Pet)
 
@@ -36,7 +36,7 @@ describe("Pet controller functional test suite", () => {
   test("POST api/v1/users/:userId/pets :: when birthday not informed or is in the wrong format, should return an error message", async () => {
     const user = await factory.create(User)
 
-    const token = await userTestUtils.login({ app, user })
+    const token = await authTestUtils.login({ app, client: user })
 
     const pet = await factory.build(Pet)
 
@@ -59,7 +59,7 @@ describe("Pet controller functional test suite", () => {
   test("POST api/v1/users/:userId/pets :: when sex is not informed or is an unexpected value, should return an error message", async () => {
     const user = await factory.create(User)
 
-    const token = await userTestUtils.login({ app, user })
+    const token = await authTestUtils.login({ app, client: user })
 
     const pet = await factory.build(Pet, { sex: "unknown" })
 
@@ -77,7 +77,7 @@ describe("Pet controller functional test suite", () => {
   test("POST api/v1/users/:userId/pets :: when type is not informed, should return an error message", async () => {
     const user = await factory.create(User)
 
-    const token = await userTestUtils.login({ app, user })
+    const token = await authTestUtils.login({ app, client: user })
 
     const pet = await factory.build(Pet)
 
@@ -97,7 +97,7 @@ describe("Pet controller functional test suite", () => {
   test("POST api/v1/users/:userId/pets :: when all validation passes, should create the pet and associate it to the logged in user", async () => {
     const user = await factory.create(User)
 
-    const token = await userTestUtils.login({ app, user })
+    const token = await authTestUtils.login({ app, client: user })
 
     const pet = await factory.build(Pet)
 
@@ -115,7 +115,7 @@ describe("Pet controller functional test suite", () => {
   test("GET api/v1/users/:userId/pets :: should be able to list user pets", async () => {
     const user = await factory.create(User)
 
-    const token = await userTestUtils.login({ app, user })
+    const token = await authTestUtils.login({ app, client: user })
 
     const pets = await Promise.all(
       R.range(0, 5).map(() =>
@@ -147,7 +147,7 @@ describe("Pet controller functional test suite", () => {
 
     const pet = await factory.create(Pet, { owner: user })
 
-    const token = await userTestUtils.login({ app, user })
+    const token = await authTestUtils.login({ app, client: user })
 
     const response = await request(app)
       .post(`/api/v1/users/${user.id}/pets/${pet.id}/pictures`)
@@ -164,7 +164,7 @@ describe("Pet controller functional test suite", () => {
 
     const pet = await factory.create(Pet, { owner: user })
 
-    const token = await userTestUtils.login({ app, user })
+    const token = await authTestUtils.login({ app, client: user })
 
     const files = await Promise.all(
       R.range(0, 21).map(() => factory.create(File))
@@ -197,12 +197,18 @@ describe("Pet controller functional test suite", () => {
 
       await request(app)
         .post(`/api/v1/users/${blocked.id}/blocked_users`)
-        .set("Authorization", await userTestUtils.login({ app, user: blocker }))
+        .set(
+          "Authorization",
+          await authTestUtils.login({ app, client: blocker })
+        )
         .expect(200)
 
       await request(app)
         .get(`/api/v1/users/${blocker.id}/pets`)
-        .set("Authorization", await userTestUtils.login({ app, user: blocked }))
+        .set(
+          "Authorization",
+          await authTestUtils.login({ app, client: blocked })
+        )
         .expect(403)
     })
   })
