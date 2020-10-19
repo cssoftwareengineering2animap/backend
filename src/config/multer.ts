@@ -4,7 +4,7 @@ import multer, { FileFilterCallback, Options } from "multer"
 import path from "path"
 import { File } from "../domain/entities/file_entity"
 
-const megaBytes = (quantity: number) => quantity * 1024 * 1024
+const megaBits = (quantity: number) => quantity * 1024 * 1024
 const dest = path.resolve(__dirname, "..", "..", "public")
 
 export const multerConfig: Options = {
@@ -18,7 +18,7 @@ export const multerConfig: Options = {
       ),
   }),
   limits: {
-    fileSize: megaBytes(2),
+    fileSize: megaBits(2),
   },
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   fileFilter: (_request: Request, file: any, callback: FileFilterCallback) => {
