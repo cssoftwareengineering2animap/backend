@@ -2,23 +2,36 @@ import { container } from "tsyringe"
 import { StatusCodes } from "http-status-codes"
 import { Request, Response, NextFunction } from "express"
 import {
+  SessionData,
   SessionProvider,
   SessionProviderToken,
 } from "../../../domain/providers/session_provider"
 import { User } from "../../../domain/entities/user_entity"
+import { Host } from "../../../domain/entities/host_entity"
+
+const sessionProvider = container.resolve<SessionProvider>(SessionProviderToken)
+
+const getClient = async ({ clientId, sessionType }: SessionData) => {
+  let user
+  let host
+
+  if (sessionType === "user") {
+    user = await User.findOne({ id: clientId })
+  } else if (sessionType === "host") {
+    host = await Host.findOne({ id: clientId })
+  }
+
+  return { user, host }
+}
 
 export const authRequired = async (
   request: Request,
   response: Response,
-  next?: NextFunction
+  next: NextFunction
 ) => {
   if (!request.headers.authorization) {
     return response.status(StatusCodes.UNAUTHORIZED).send()
   }
-
-  const sessionProvider = container.resolve<SessionProvider>(
-    SessionProviderToken
-  )
 
   const sessionData = await sessionProvider.validateToken(
     request.headers.authorization
@@ -28,19 +41,17 @@ export const authRequired = async (
     return response.status(StatusCodes.UNAUTHORIZED).send()
   }
 
-  const user = await User.findOne({ id: sessionData.userId })
+  const { user, host } = await getClient(sessionData)
 
-  if (!user) {
+  if (!user && !host) {
     return response.status(StatusCodes.UNAUTHORIZED).send()
   }
 
   request.context = {
     ...request.context,
     user,
+    host,
   }
 
-  if (next) {
-    return next()
-  }
-  return null
+  return next()
 }

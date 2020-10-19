@@ -43,7 +43,6 @@ export class Pet extends BaseEntity {
   @JoinTable()
   pictures: Promise<File[]>
   // passeios[Relação]
-  // dono[Relação]
 
   @ManyToMany(() => Rating, rating => rating.pet)
   @JoinTable()

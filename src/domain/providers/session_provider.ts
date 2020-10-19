@@ -3,14 +3,17 @@ import { User } from "../entities/user_entity"
 
 export type SessionToken = string
 
+export type SessionType = "user" | "host"
+
 export type SessionData = {
-  userId: ID
-  session_id: ID
-  authenticated_at: string
+  sessionType: SessionType
+  clientId: ID
+  sessionId: ID
+  authenticatedAt: string
 }
 
 export interface SessionProvider {
-  create: (userId: ID) => Promise<SessionToken>
+  create: (clientId: ID, sessionType: SessionType) => Promise<SessionToken>
   destroy: (session: SessionToken) => Promise<void>
   validateToken: (sessionToken: SessionToken) => Promise<SessionData | null>
   destroyUserSessions: (user: User | ID) => Promise<void>

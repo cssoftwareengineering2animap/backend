@@ -6,7 +6,7 @@ import * as factory from "../../../../../infra/database/support/factory"
 import * as connection from "../../../../../infra/database/support/connection"
 import { User } from "../../../../../domain/entities/user_entity"
 import { File } from "../../../../../domain/entities/file_entity"
-import * as userTestUtils from "../../../../../../test/utils/login"
+import * as authTestUtils from "../../../../../../test/utils/auth"
 
 describe("User controller functional test suite", () => {
   beforeAll(connection.create)
@@ -80,7 +80,7 @@ describe("User controller functional test suite", () => {
   test("POST api/v1/users/pictures :: should be able to upload profile pictures", async () => {
     const user = await factory.create(User)
 
-    const token = await userTestUtils.login({ app, user })
+    const token = await authTestUtils.login({ app, client: user })
 
     const response = await request(app)
       .post(`/api/v1/users/pictures`)
@@ -111,7 +111,10 @@ describe("User controller functional test suite", () => {
       )
     )
 
-    const token = await userTestUtils.login({ app, user: { email, password } })
+    const token = await authTestUtils.login({
+      app,
+      client: { email, password },
+    })
 
     const response = await request(app)
       .post(`/api/v1/users/pictures`)
@@ -128,7 +131,7 @@ describe("User controller functional test suite", () => {
 
     const userThatWillBeBlocked = await factory.create(User)
 
-    const token = await userTestUtils.login({ app, user })
+    const token = await authTestUtils.login({ app, client: user })
 
     await request(app)
       .post(`/api/v1/users/${userThatWillBeBlocked.id}/blocked_users`)
