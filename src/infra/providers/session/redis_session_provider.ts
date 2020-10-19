@@ -5,6 +5,7 @@ import {
   SessionProvider,
   SessionToken,
   SessionData,
+  SessionType,
 } from "../../../domain/providers/session_provider"
 import { ID } from "../../../core/types/id"
 import {
@@ -28,19 +29,20 @@ export class RedisSessionProvider implements SessionProvider {
     this.redisProvider.connection("sessions")
   }
 
-  private sessionKeyFromUserId = (id: ID) => `animap@user_sessions:${id}`
+  private sessionKeyFor = (id: ID) => `animap@sessions:${id}`
 
-  public create = async (userId: string) => {
+  public create = async (clientId: string, sessionType: SessionType) => {
     const sessionData = JSON.stringify({
-      userId,
-      session_id: uuid.v4(),
-      authenticated_at: moment().format("YYYY-MM-DD hh:mm:ss"),
+      sessionType,
+      clientId,
+      sessionId: uuid.v4(),
+      authenticatedAt: moment().format("YYYY-MM-DD hh:mm:ss"),
     })
 
     const sessionToken = this.encryptionProvider.encrypt(sessionData)
 
     await this.redisProvider.setex(
-      this.sessionKeyFromUserId(userId),
+      this.sessionKeyFor(clientId),
       ONE_WEEK_IN_SECONDS,
       sessionData
     )
@@ -50,7 +52,7 @@ export class RedisSessionProvider implements SessionProvider {
 
   public destroyUserSessions = async (user: User | ID) => {
     const id = typeof user === "string" ? user : user.id
-    await this.redisProvider.del(this.sessionKeyFromUserId(id))
+    await this.redisProvider.del(this.sessionKeyFor(id))
   }
 
   public destroy = async (sessionToken: SessionToken) => {
@@ -59,13 +61,14 @@ export class RedisSessionProvider implements SessionProvider {
       throw new ApplicationError(`Invalid session token: ${sessionToken}`)
     }
 
-    await this.redisProvider.del(this.sessionKeyFromUserId(sessionData.userId))
+    await this.redisProvider.del(this.sessionKeyFor(sessionData.clientId))
   }
 
   public validateToken = async (
     sessionToken: SessionToken
   ): Promise<SessionData | null> => {
     const sessionDataAsString = this.encryptionProvider.decrypt(sessionToken)
+
     if (!sessionDataAsString) {
       return null
     }
@@ -73,12 +76,12 @@ export class RedisSessionProvider implements SessionProvider {
     const sessionData = JSON.parse(sessionDataAsString)
 
     const session: SessionData | null = await this.redisProvider
-      .get(this.sessionKeyFromUserId(sessionData.userId))
+      .get(this.sessionKeyFor(sessionData.clientId))
       .then(sessionAsString =>
         sessionAsString ? JSON.parse(sessionAsString) : null
       )
 
-    if (session?.session_id !== sessionData.session_id) {
+    if (session?.sessionId !== sessionData.sessionId) {
       return null
     }
 

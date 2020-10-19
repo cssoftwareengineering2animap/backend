@@ -5,52 +5,94 @@ import { app } from "../../../server"
 import * as factory from "../../../../../infra/database/support/factory"
 import * as connection from "../../../../../infra/database/support/connection"
 import { User } from "../../../../../domain/entities/user_entity"
-import * as userTestUtils from "../../../../../../test/utils/login"
+import * as authTestUtils from "../../../../../../test/utils/auth"
 import {
   MailProvider,
   MailProviderToken,
 } from "../../../../../domain/providers/mail_provider"
+import { Host } from "../../../../../domain/entities/host_entity"
 
 describe("Auth controller functional test suite", () => {
   beforeAll(connection.create)
   beforeEach(connection.clear)
 
   describe("Login", () => {
-    test("POST api/v1/login :: when email is not found, should return an error message", async () => {
-      const user = await factory.build(User)
+    describe("A an user", () => {
+      test("POST api/v1/login :: as a user, when email is not found, should return an error message", async () => {
+        const user = await factory.build(User)
 
-      const response = await request(app)
-        .post("/api/v1/login")
-        .send({ email: user.email, password: user.password })
-        .expect(401)
+        const response = await request(app)
+          .post("/api/v1/login")
+          .send({ email: user.email, password: user.password })
+          .expect(401)
 
-      expect(response.body).toEqual([{ message: "Email não encontrado" }])
+        expect(response.body).toEqual([{ message: "Email não encontrado" }])
+      })
+
+      test("POST api/v1/login :: as a user, when password is not correct, should return an error message", async () => {
+        const user = await factory.build(User)
+
+        await request(app).post("/api/v1/users").send(user).expect(201)
+
+        const response = await request(app)
+          .post("/api/v1/login")
+          .send({ email: user.email, password: "incorrect_password" })
+          .expect(401)
+
+        expect(response.body).toEqual([{ message: "Senha incorreta" }])
+      })
+
+      test("POST api/v1/login :: as a user, when email exists & password is correct, should return a session token", async () => {
+        const user = await factory.build(User)
+
+        await request(app).post("/api/v1/users").send(user).expect(201)
+
+        const response = await request(app)
+          .post("/api/v1/login")
+          .send({ email: user.email, password: user.password })
+          .expect(200)
+
+        expect(response.body.data.token).toBeTruthy()
+      })
     })
 
-    test("POST api/v1/login :: when password is not correct, should return an error message", async () => {
-      const user = await factory.build(User)
+    describe("As a host", () => {
+      test("POST api/v1/login :: as a host, when email is not found, should return an error message", async () => {
+        const host = await factory.build(Host)
 
-      await request(app).post("/api/v1/users").send(user).expect(201)
+        const response = await request(app)
+          .post("/api/v1/login")
+          .send({ email: host.email, password: host.password })
+          .expect(401)
 
-      const response = await request(app)
-        .post("/api/v1/login")
-        .send({ email: user.email, password: "incorrect_password" })
-        .expect(401)
+        expect(response.body).toEqual([{ message: "Email não encontrado" }])
+      })
 
-      expect(response.body).toEqual([{ message: "Senha incorreta" }])
-    })
+      test("POST api/v1/login :: as a host, when password is not correct, should return an error message", async () => {
+        const host = await factory.build(Host)
 
-    test("POST api/v1/login :: when email exists & password is correct, should return a session token", async () => {
-      const user = await factory.build(User)
+        await request(app).post("/api/v1/hosts").send(host).expect(201)
 
-      await request(app).post("/api/v1/users").send(user).expect(201)
+        const response = await request(app)
+          .post("/api/v1/login")
+          .send({ email: host.email, password: "incorrect_password" })
+          .expect(401)
 
-      const response = await request(app)
-        .post("/api/v1/login")
-        .send({ email: user.email, password: user.password })
-        .expect(200)
+        expect(response.body).toEqual([{ message: "Senha incorreta" }])
+      })
 
-      expect(response.body.data.token).toBeTruthy()
+      test("POST api/v1/login :: as a host, when email exists & password is correct, should return a session token", async () => {
+        const host = await factory.build(Host)
+
+        await request(app).post("/api/v1/hosts").send(host).expect(201)
+
+        const response = await request(app)
+          .post("/api/v1/login")
+          .send({ email: host.email, password: host.password })
+          .expect(200)
+
+        expect(response.body.data.token).toBeTruthy()
+      })
     })
   })
 
@@ -108,9 +150,9 @@ describe("Auth controller functional test suite", () => {
         .send({ token: passwordRecoveryToken, password: "new_password" })
         .expect(200)
 
-      const sessionToken = await userTestUtils.login({
+      const sessionToken = await authTestUtils.login({
         app,
-        user: { email: user.email, password: "new_password" },
+        client: { email: user.email, password: "new_password" },
       })
 
       expect(sessionToken).toBeDefined()
@@ -142,9 +184,9 @@ describe("Auth controller functional test suite", () => {
     test("PATCH api/v1/forgot_password :: when user resets password, should invalidate user sessions", async () => {
       const user = await factory.create(User)
 
-      const sessionToken = await userTestUtils.login({
+      const sessionToken = await authTestUtils.login({
         app,
-        user,
+        client: user,
       })
 
       await request(app)

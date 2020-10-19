@@ -1,17 +1,40 @@
 /* eslint-disable @typescript-eslint/no-use-before-define */
 import * as faker from "faker"
+import { br as fakerBr } from "faker-br"
 import moment from "moment"
 import { User } from "../../../domain/entities/user_entity"
 import { Pet } from "../../../domain/entities/pet_entity"
 import { Rating } from "../../../domain/entities/rating_entity"
 import { File } from "../../../domain/entities/file_entity"
+import { Host } from "../../../domain/entities/host_entity"
+import { BankAccount } from "../../../domain/entities/bank_account_entity"
 
 const entityFactoryMap = new Map()
+
+entityFactoryMap.set(BankAccount, async (props?: Partial<BankAccount>) => {
+  const owner = await create(Host)
+
+  return {
+    bank: faker.finance.accountName(),
+    account: faker.finance.account(),
+    agency: faker.finance.accountName(),
+    owner,
+    ...props,
+  }
+})
 
 entityFactoryMap.set(User, (props?: Partial<User>) => ({
   name: faker.internet.userName(),
   email: faker.internet.email(),
   password: faker.internet.password(),
+  ...props,
+}))
+
+entityFactoryMap.set(Host, (props?: Partial<Host>) => ({
+  name: faker.internet.userName(),
+  email: faker.internet.email(),
+  password: faker.internet.password(),
+  cpf: fakerBr.cpf(),
   ...props,
 }))
 
