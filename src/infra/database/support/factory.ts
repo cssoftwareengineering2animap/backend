@@ -38,13 +38,19 @@ entityFactoryMap.set(Host, (props?: Partial<Host>) => ({
   ...props,
 }))
 
-entityFactoryMap.set(Pet, (props?: Partial<Pet>) => ({
-  name: faker.name.firstName(),
-  birthday: moment(faker.date.past()).format("YYYY-MM-DD"),
-  sex: faker.random.arrayElement(["male", "female"]),
-  type: faker.random.alphaNumeric(10),
-  ...props,
-}))
+entityFactoryMap.set(Pet, async (props?: Partial<Pet>) => {
+  const owner = await create(User)
+
+  return {
+    name: faker.name.firstName(),
+    birthday: moment(faker.date.past()).format("YYYY-MM-DD"),
+    sex: faker.random.arrayElement(["male", "female"]),
+    type: faker.random.alphaNumeric(10),
+    owner,
+    ownerId: owner.id,
+    ...props,
+  }
+})
 
 entityFactoryMap.set(File, (props?: Partial<File>) => ({
   name: faker.random.alphaNumeric(16),

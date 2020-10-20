@@ -36,6 +36,9 @@ export class Pet extends BaseEntity {
   @OneToOne(() => File)
   profilePicture: File
 
+  @Column()
+  ownerId: ID
+
   @ManyToOne(() => User, user => user.pets, { cascade: true })
   owner: User
 

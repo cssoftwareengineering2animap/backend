@@ -137,9 +137,11 @@ describe("Pet controller functional test suite", () => {
       .set("Authorization", token)
       .expect(200)
 
-    expect(pets.map(pet => pet.id)).toEqual(
-      response.body.data.map(({ node }) => node.id)
-    )
+    const expectedPetIds = pets.map(pet => pet.id).sort()
+
+    const responsePetIds = response.body.data.map(({ node }) => node.id).sort()
+
+    expect(responsePetIds).toEqual(expectedPetIds)
   })
 
   test("POST /api/v1/users/:userId/pets/id/pictures` :: should be able to upload pet pictures", async () => {
@@ -191,7 +193,7 @@ describe("Pet controller functional test suite", () => {
   })
 
   describe("GET api/v1/users/:userId/pets :: when the user is blocked", () => {
-    test("GET api/v1/users/:userId/pets :: should not be able to fetch the pets that belong to user that blocked him/her", async () => {
+    test("should not be able to fetch the pets that belong to user that blocked him/her", async () => {
       const blocker = await factory.create(User)
       const blocked = await factory.create(User)
 
@@ -210,6 +212,22 @@ describe("Pet controller functional test suite", () => {
           await authTestUtils.login({ app, client: blocked })
         )
         .expect(403)
+    })
+  })
+
+  describe("api/v1/pets/feed", () => {
+    test.only("GET :: should return a paginated list of pets", async () => {
+      await Promise.all(R.range(0, 10).map(() => factory.create(Pet)))
+
+      const user = await factory.create(User)
+      const token = await authTestUtils.login({ app, client: user })
+
+      const response = await request(app)
+        .get(`/api/v1/pets/feed?page=0&limit=20`)
+        .set("Authorization", token)
+        .expect(200)
+
+      expect(response.body.data.length).toBe(10)
     })
   })
 })

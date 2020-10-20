@@ -1,13 +1,13 @@
 import { injectable } from "tsyringe"
 import { Pet } from "../../../entities/pet_entity"
 import { edge } from "../../../../core/utils/edge"
-import { GetPetsDto } from "./get_pets_dto"
 import { User } from "../../../entities/user_entity"
 import { ForbiddenError } from "../../../../core/errors/forbidden_error"
+import { GetUserPetsDto } from "./get_user_pets_dto"
 
 @injectable()
-export class GetPetsUseCase {
-  execute = async ({ user, userIdThatPetsBelongTo }: GetPetsDto) => {
+export class GetUserPetsUseCase {
+  execute = async ({ user, userIdThatPetsBelongTo }: GetUserPetsDto) => {
     const userThatOwnsPets = await User.findOneOrFail(userIdThatPetsBelongTo)
 
     if (await userThatOwnsPets.isUserBlocked(user)) {
