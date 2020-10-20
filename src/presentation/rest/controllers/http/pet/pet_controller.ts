@@ -4,24 +4,36 @@ import { StatusCodes } from "http-status-codes"
 import { validateDto } from "../../../../../core/utils/validate_dto"
 import { CreatePetUseCase } from "../../../../../domain/usecases/pet/create_pet/create_pet_use_case"
 import { envelope } from "../../../utils/envelope"
-import { GetPetsUseCase } from "../../../../../domain/usecases/pet/get_pets/get_pets_use_case"
 import { CreatePetDto } from "../../../../../domain/usecases/pet/create_pet/create_pet_dto"
 import { UploadPetPictureUseCase } from "../../../../../domain/usecases/pet/upload_pet_picture/upload_pet_picture_use_case"
 import { FileUploadDto } from "../../../../../domain/usecases/dtos/file_upload_dto"
+import { GetPetsFeedUseCase } from "../../../../../domain/usecases/pet/get_pets_feed/get_pets_feed_use_case"
+import { GetUserPetsUseCase } from "../../../../../domain/usecases/pet/get_user_pets/get_user_pets_use_case"
 
 @injectable()
 export class PetController {
   constructor(
     @inject(CreatePetUseCase)
     private readonly createPetUseCase: CreatePetUseCase,
-    @inject(GetPetsUseCase)
-    private readonly getPetsUseCase: GetPetsUseCase,
+    @inject(GetUserPetsUseCase)
+    private readonly getUserPetsUseCase: GetUserPetsUseCase,
+    @inject(GetPetsFeedUseCase)
+    private readonly getPetsFeedUseCase: GetPetsFeedUseCase,
     @inject(UploadPetPictureUseCase)
     private readonly uploadPetPictureUseCase: UploadPetPictureUseCase
   ) {}
 
+  getPetsFeed = async (request: Request, response: Response) => {
+    const pets = await this.getPetsFeedUseCase.execute({
+      user: request.context.user,
+      pagination: request.context.pagination,
+    })
+
+    return response.json(envelope(pets))
+  }
+
   getUserPets = async (request: Request, response: Response) => {
-    const pets = await this.getPetsUseCase.execute({
+    const pets = await this.getUserPetsUseCase.execute({
       user: request.context.user,
       userIdThatPetsBelongTo: request.params.userId,
     })

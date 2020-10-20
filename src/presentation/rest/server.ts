@@ -16,6 +16,7 @@ import * as connection from "../../infra/database/support/connection"
 import { globalErrorHandler } from "./middlewares/global_error_handler"
 import { ChatController } from "./controllers/ws/chat/chat_controller"
 import { AckFunction, Message } from "./controllers/ws/types"
+import { clampPagination } from "./middlewares/clamp_pagination"
 
 container.register()
 
@@ -34,6 +35,7 @@ export const app = express()
       path.resolve(__dirname, "..", "..", "..", "public")
     )
   )
+  .use(clampPagination)
 
 loadRoutes(app)
 

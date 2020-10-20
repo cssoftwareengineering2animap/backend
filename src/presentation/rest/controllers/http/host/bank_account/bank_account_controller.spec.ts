@@ -84,7 +84,7 @@ describe("Host BankAccount controller functional test suite", () => {
     }
   })
 
-  test.only("POST api/v1/hosts/bank_accounts :: when all validation passes, should create a bank account", async () => {
+  test("POST api/v1/hosts/bank_accounts :: when all validation passes, should create a bank account", async () => {
     const bankAccount = await factory.build(BankAccount)
 
     const token = await authTestUtils.login({ app, client: bankAccount.owner })

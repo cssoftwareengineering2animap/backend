@@ -1,9 +1,9 @@
 import { IsNotEmpty } from "class-validator"
+import { Pagination } from "../../../../core/types/pagination"
 import { User } from "../../../entities/user_entity"
-import { ID } from "../../../../core/types/id"
 
-export class GetPetsDto {
-  constructor(props: GetPetsDto) {
+export class GetPetsFeedDto {
+  constructor(props: GetPetsFeedDto) {
     Object.assign(this, props)
   }
 
@@ -12,6 +12,6 @@ export class GetPetsDto {
   })
   user: User
 
-  @IsNotEmpty({ message: "O usuário que é dono dos pets deve ser informado" })
-  userIdThatPetsBelongTo: ID
+  @IsNotEmpty({ message: "Informe a paginação" })
+  pagination: Pagination
 }

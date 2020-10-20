@@ -13,6 +13,12 @@ const upload = multer(multerConfig)
 const petController = container.resolve(PetController)
 
 router.get(
+  "/v1/pets/feed",
+  authRequired,
+  withErrorHandler(petController.getPetsFeed)
+)
+
+router.get(
   "/v1/users/:userId/pets",
   authRequired,
   withErrorHandler(petController.getUserPets)
