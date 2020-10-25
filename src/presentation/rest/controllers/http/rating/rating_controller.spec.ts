@@ -1,4 +1,5 @@
 import request from "supertest"
+import { StatusCodes } from "http-status-codes"
 import { app } from "../../../server"
 import * as factory from "../../../../../infra/database/support/factory"
 import * as connection from "../../../../../infra/database/support/connection"
@@ -19,7 +20,7 @@ describe("User controller functional test suite", () => {
       .post(`/api/v1/users/${rating.user.id}/ratings`)
       .set("Authorization", token)
       .send(rating)
-      .expect(400)
+      .expect(StatusCodes.BAD_REQUEST)
 
     expect(response.body).toEqual([{ message: "O mínimo de estrelas é 0" }])
   })
@@ -38,7 +39,7 @@ describe("User controller functional test suite", () => {
       .post(`/api/v1/users/${rating.user.id}/ratings`)
       .set("Authorization", token)
       .send(rating)
-      .expect(400)
+      .expect(StatusCodes.BAD_REQUEST)
 
     expect(response.body).toEqual([{ message: "O máximo de estrelas é 5" }])
   })
@@ -56,7 +57,7 @@ describe("User controller functional test suite", () => {
       .post(`/api/v1/users/${rating.user.id}/ratings`)
       .set("Authorization", token)
       .send(rating)
-      .expect(201)
+      .expect(StatusCodes.CREATED)
 
     expect(response.body.data.id).toBeDefined()
     expect(response.body.data).toMatchObject({

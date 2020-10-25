@@ -84,6 +84,7 @@ entityFactoryMap.set(Tour, async (props?: Partial<Tour>) => {
     pet,
     host,
     status: TourStatus.pending,
+    tip: String(faker.random.number({ min: 1, max: 100 })),
     ...props,
   }
 })

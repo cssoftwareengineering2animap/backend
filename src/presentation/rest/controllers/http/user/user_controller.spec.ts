@@ -1,6 +1,7 @@
 import request from "supertest"
 import * as R from "ramda"
 import { getConnection } from "typeorm"
+import { StatusCodes } from "http-status-codes"
 import { app } from "../../../server"
 import * as factory from "../../../../../infra/database/support/factory"
 import * as connection from "../../../../../infra/database/support/connection"
@@ -19,7 +20,7 @@ describe("User controller functional test suite", () => {
     const response = await request(app)
       .post("/api/v1/users")
       .send(user)
-      .expect(400)
+      .expect(StatusCodes.BAD_REQUEST)
 
     expect(response.body).toEqual([
       { message: "O email deve estar em um formato válido" },
@@ -34,7 +35,7 @@ describe("User controller functional test suite", () => {
     const response = await request(app)
       .post("/api/v1/users")
       .send(user)
-      .expect(400)
+      .expect(StatusCodes.BAD_REQUEST)
 
     expect(response.body).toEqual([{ message: "Esse email já está em uso" }])
   })
@@ -46,7 +47,7 @@ describe("User controller functional test suite", () => {
     const response = await request(app)
       .post("/api/v1/users")
       .send(user)
-      .expect(400)
+      .expect(StatusCodes.BAD_REQUEST)
 
     expect(response.body[0].message).toBe("O nome deve ser informado")
   })
@@ -58,7 +59,7 @@ describe("User controller functional test suite", () => {
     const response = await request(app)
       .post("/api/v1/users")
       .send(user)
-      .expect(400)
+      .expect(StatusCodes.BAD_REQUEST)
 
     expect(response.body).toEqual([
       { message: "A senha deve ter no mínimo 6 caracteres" },
@@ -70,7 +71,7 @@ describe("User controller functional test suite", () => {
     const response = await request(app)
       .post("/api/v1/users")
       .send(user)
-      .expect(201)
+      .expect(StatusCodes.CREATED)
 
     expect(response.body.data.id).toBeTruthy()
 
@@ -87,7 +88,7 @@ describe("User controller functional test suite", () => {
       .set("Authorization", token)
       .field("displayOrder", 0)
       .attach("file", "test/fixtures/files/gohorse1.jpeg")
-      .expect(201)
+      .expect(StatusCodes.CREATED)
 
     expect(response.body.data.id).toBeTruthy()
   })
@@ -121,7 +122,7 @@ describe("User controller functional test suite", () => {
       .set("Authorization", token)
       .field("displayOrder", 0)
       .attach("file", "test/fixtures/files/gohorse1.jpeg")
-      .expect(400)
+      .expect(StatusCodes.BAD_REQUEST)
 
     expect(response.body).toEqual([{ message: "Limite de fotos excedido" }])
   })
@@ -136,6 +137,6 @@ describe("User controller functional test suite", () => {
     await request(app)
       .post(`/api/v1/users/${userThatWillBeBlocked.id}/blocked_users`)
       .set("Authorization", token)
-      .expect(200)
+      .expect(StatusCodes.OK)
   })
 })

@@ -1,5 +1,6 @@
 import request from "supertest"
 
+import { StatusCodes } from "http-status-codes"
 import * as factory from "../../../../../../infra/database/support/factory"
 import * as connection from "../../../../../../infra/database/support/connection"
 import { app } from "../../../../server"
@@ -110,7 +111,7 @@ describe("Host BankAccount controller functional test suite", () => {
         .post("/api/v1/bank_accounts")
         .set("Authorization", token)
         .send(bankAccount)
-        .expect(201)
+        .expect(StatusCodes.CREATED)
 
       expect(response.body.data).toMatchObject({
         bank: bankAccount.bank,

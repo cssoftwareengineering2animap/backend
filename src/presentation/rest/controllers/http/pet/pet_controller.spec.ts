@@ -1,6 +1,7 @@
 import request from "supertest"
 import * as R from "ramda"
 import { getConnection } from "typeorm"
+import { StatusCodes } from "http-status-codes"
 import { app } from "../../../server"
 import * as factory from "../../../../../infra/database/support/factory"
 import * as connection from "../../../../../infra/database/support/connection"
@@ -27,7 +28,7 @@ describe("Pet controller functional test suite", () => {
         .post(`/api/v1/pets`)
         .set("Authorization", token)
         .send(pet)
-        .expect(400)
+        .expect(StatusCodes.BAD_REQUEST)
 
       expect(response.body).toEqual([
         { message: "O nome do pet deve ter no mínimo 2 caracteres" },
@@ -47,7 +48,7 @@ describe("Pet controller functional test suite", () => {
         .post(`/api/v1/pets`)
         .set("Authorization", token)
         .send(pet)
-        .expect(400)
+        .expect(StatusCodes.BAD_REQUEST)
 
       expect(response.body).toEqual([
         {
@@ -69,7 +70,7 @@ describe("Pet controller functional test suite", () => {
         .post(`/api/v1/pets`)
         .set("Authorization", token)
         .send(pet)
-        .expect(400)
+        .expect(StatusCodes.BAD_REQUEST)
 
       expect(response.body).toEqual([
         {
@@ -91,7 +92,7 @@ describe("Pet controller functional test suite", () => {
         .post(`/api/v1/pets`)
         .set("Authorization", token)
         .send(pet)
-        .expect(400)
+        .expect(StatusCodes.BAD_REQUEST)
 
       expect(response.body).toEqual([
         {
@@ -113,7 +114,7 @@ describe("Pet controller functional test suite", () => {
         .post(`/api/v1/pets`)
         .set("Authorization", token)
         .send(pet)
-        .expect(400)
+        .expect(StatusCodes.BAD_REQUEST)
 
       expect(response.body).toEqual([
         { message: "O tipo de animal deve ser informado" },
@@ -129,7 +130,7 @@ describe("Pet controller functional test suite", () => {
         .post(`/api/v1/pets`)
         .set("Authorization", token)
         .send(pet)
-        .expect(201)
+        .expect(StatusCodes.CREATED)
 
       expect(response.body.data.owner.id).toBe(pet.owner.id)
 
@@ -159,7 +160,7 @@ describe("Pet controller functional test suite", () => {
                 .post(`/api/v1/pets`)
                 .set("Authorization", token)
                 .send(pet)
-                .expect(201)
+                .expect(StatusCodes.CREATED)
             )
             .then(response => response.body.data)
         )
@@ -168,7 +169,7 @@ describe("Pet controller functional test suite", () => {
       const response = await request(app)
         .get(`/api/v1/users/${user.id}/pets`)
         .set("Authorization", token)
-        .expect(200)
+        .expect(StatusCodes.OK)
 
       const expectedPetIds = pets.map(pet => pet.id).sort()
 
@@ -189,7 +190,7 @@ describe("Pet controller functional test suite", () => {
           "Authorization",
           await authTestUtils.login({ app, client: blocker })
         )
-        .expect(200)
+        .expect(StatusCodes.OK)
 
       await request(app)
         .get(`/api/v1/users/${blocker.id}/pets`)
@@ -197,7 +198,7 @@ describe("Pet controller functional test suite", () => {
           "Authorization",
           await authTestUtils.login({ app, client: blocked })
         )
-        .expect(403)
+        .expect(StatusCodes.FORBIDDEN)
     })
   })
 
@@ -214,7 +215,7 @@ describe("Pet controller functional test suite", () => {
         .set("Authorization", token)
         .field("displayOrder", 0)
         .attach("file", "test/fixtures/files/gohorse1.jpeg")
-        .expect(201)
+        .expect(StatusCodes.CREATED)
 
       expect(response.body.data.id).toBeTruthy()
     })
@@ -245,7 +246,7 @@ describe("Pet controller functional test suite", () => {
         .set("Authorization", token)
         .field("displayOrder", 0)
         .attach("file", "test/fixtures/files/gohorse1.jpeg")
-        .expect(400)
+        .expect(StatusCodes.BAD_REQUEST)
 
       expect(response.body).toEqual([{ message: "Limite de fotos excedido" }])
     })
@@ -261,7 +262,7 @@ describe("Pet controller functional test suite", () => {
       const response = await request(app)
         .get(`/api/v1/pets/feed?page=0&limit=20`)
         .set("Authorization", token)
-        .expect(200)
+        .expect(StatusCodes.OK)
 
       expect(response.body.data.length).toBe(10)
     })
