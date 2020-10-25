@@ -27,6 +27,9 @@ export class Tour extends BaseEntity {
   @Column()
   scheduledFor: Date
 
+  @Column()
+  tip: string
+
   @ManyToOne(() => Pet, pet => pet.tours)
   pet: Pet
 
