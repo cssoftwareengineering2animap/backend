@@ -8,7 +8,7 @@ import { Message } from "../../../../../domain/entities/message_entity"
 
 const connectSocket = () =>
   new Promise<SocketIOClient.Socket>((resolve, reject) => {
-    const socket = io.connect(`${env.HOST}:${env.PORT}`, {
+    const socket = io.connect(`${env.APP_HOST}:${env.PORT}`, {
       transports: ["websocket", "polling"],
       secure: true,
       reconnection: true,

@@ -47,7 +47,7 @@ export class File extends BaseEntity {
   @AfterLoad()
   getUrl() {
     if (/test|dev/.test(env.NODE_ENV)) {
-      this.url = `${env.HOST}/public/${this.key}`
+      this.url = `${env.APP_HOST}/public/${this.key}`
     }
   }
 }

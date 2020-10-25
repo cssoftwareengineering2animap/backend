@@ -183,7 +183,7 @@ describe("Tour controller functional test suite", () => {
         })
       })
 
-      test.only(`should be able to fetch a list of tours that my pets are involved in`, async () => {
+      test(`should be able to fetch a list of tours that my pets are involved in`, async () => {
         const user = await factory.create(User)
         const pet = await factory.create(Pet, { owner: user })
         const tour = await factory.create(Tour, { pet })
