@@ -1,4 +1,4 @@
-import { IsIn, IsNotEmpty } from "class-validator"
+import { IsIn, IsNotEmpty, Min } from "class-validator"
 import { ID } from "../../../../core/types/id"
 import { Host } from "../../../entities/host_entity"
 import { TourStatus } from "../../../entities/tour_entity"
@@ -19,6 +19,9 @@ export class CreateTourDto {
     message: `O status deve ser um dos ${Object.values(TourStatus).join(", ")}`,
   })
   status: TourStatus
+
+  @Min(1, { message: "A gorjeta deve ser no mínimo 1 real" })
+  tip: number
 
   @isFutureDate({
     message:
