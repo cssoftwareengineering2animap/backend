@@ -115,7 +115,7 @@ describe("Auth controller functional test suite", () => {
       expect(response.body).toEqual([{ message: "Email não encontrado" }])
     })
 
-    test("POST api/v1/forgot_password :: when email exists should send an email to with a password recovery token", async () => {
+    test("POST api/v1/forgot_password :: when email exists should send an email with a password recovery token", async () => {
       const user = await factory.create(User)
 
       await request(app)

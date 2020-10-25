@@ -112,3 +112,5 @@ dist
 /public
 build
 dist
+
+.env
