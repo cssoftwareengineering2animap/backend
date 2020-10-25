@@ -1,6 +1,7 @@
 import request from "supertest"
 import faker from "faker"
 import { container } from "tsyringe"
+import { StatusCodes } from "http-status-codes"
 import { app } from "../../../server"
 import * as factory from "../../../../../infra/database/support/factory"
 import * as connection from "../../../../../infra/database/support/connection"
@@ -24,7 +25,7 @@ describe("Auth controller functional test suite", () => {
         const response = await request(app)
           .post("/api/v1/login")
           .send({ email: user.email, password: user.password })
-          .expect(401)
+          .expect(StatusCodes.UNAUTHORIZED)
 
         expect(response.body).toEqual([{ message: "Email não encontrado" }])
       })
@@ -32,12 +33,15 @@ describe("Auth controller functional test suite", () => {
       test("POST api/v1/login :: as a user, when password is not correct, should return an error message", async () => {
         const user = await factory.build(User)
 
-        await request(app).post("/api/v1/users").send(user).expect(201)
+        await request(app)
+          .post("/api/v1/users")
+          .send(user)
+          .expect(StatusCodes.CREATED)
 
         const response = await request(app)
           .post("/api/v1/login")
           .send({ email: user.email, password: "incorrect_password" })
-          .expect(401)
+          .expect(StatusCodes.UNAUTHORIZED)
 
         expect(response.body).toEqual([{ message: "Senha incorreta" }])
       })
@@ -45,12 +49,15 @@ describe("Auth controller functional test suite", () => {
       test("POST api/v1/login :: as a user, when email exists & password is correct, should return a session token", async () => {
         const user = await factory.build(User)
 
-        await request(app).post("/api/v1/users").send(user).expect(201)
+        await request(app)
+          .post("/api/v1/users")
+          .send(user)
+          .expect(StatusCodes.CREATED)
 
         const response = await request(app)
           .post("/api/v1/login")
           .send({ email: user.email, password: user.password })
-          .expect(200)
+          .expect(StatusCodes.OK)
 
         expect(response.body.data.token).toBeTruthy()
       })
@@ -63,7 +70,7 @@ describe("Auth controller functional test suite", () => {
         const response = await request(app)
           .post("/api/v1/login")
           .send({ email: host.email, password: host.password })
-          .expect(401)
+          .expect(StatusCodes.UNAUTHORIZED)
 
         expect(response.body).toEqual([{ message: "Email não encontrado" }])
       })
@@ -71,12 +78,15 @@ describe("Auth controller functional test suite", () => {
       test("POST api/v1/login :: as a host, when password is not correct, should return an error message", async () => {
         const host = await factory.build(Host)
 
-        await request(app).post("/api/v1/hosts").send(host).expect(201)
+        await request(app)
+          .post("/api/v1/hosts")
+          .send(host)
+          .expect(StatusCodes.CREATED)
 
         const response = await request(app)
           .post("/api/v1/login")
           .send({ email: host.email, password: "incorrect_password" })
-          .expect(401)
+          .expect(StatusCodes.UNAUTHORIZED)
 
         expect(response.body).toEqual([{ message: "Senha incorreta" }])
       })
@@ -84,12 +94,15 @@ describe("Auth controller functional test suite", () => {
       test("POST api/v1/login :: as a host, when email exists & password is correct, should return a session token", async () => {
         const host = await factory.build(Host)
 
-        await request(app).post("/api/v1/hosts").send(host).expect(201)
+        await request(app)
+          .post("/api/v1/hosts")
+          .send(host)
+          .expect(StatusCodes.CREATED)
 
         const response = await request(app)
           .post("/api/v1/login")
           .send({ email: host.email, password: host.password })
-          .expect(200)
+          .expect(StatusCodes.OK)
 
         expect(response.body.data.token).toBeTruthy()
       })
@@ -110,7 +123,7 @@ describe("Auth controller functional test suite", () => {
       const response = await request(app)
         .post("/api/v1/forgot_password")
         .send({ email })
-        .expect(400)
+        .expect(StatusCodes.BAD_REQUEST)
 
       expect(response.body).toEqual([{ message: "Email não encontrado" }])
     })
@@ -121,7 +134,7 @@ describe("Auth controller functional test suite", () => {
       await request(app)
         .post("/api/v1/forgot_password")
         .send({ email: user.email })
-        .expect(200)
+        .expect(StatusCodes.OK)
 
       expect(mailProvider.mailbox[0]).toMatchObject({ to: user.email })
     })
@@ -130,7 +143,7 @@ describe("Auth controller functional test suite", () => {
       const response = await request(app)
         .patch("/api/v1/forgot_password")
         .send({ token: "any_invalid_token", password: "new_password" })
-        .expect(400)
+        .expect(StatusCodes.BAD_REQUEST)
 
       expect(response.body).toEqual([{ message: "Token inválido ou expirado" }])
     })
@@ -141,14 +154,14 @@ describe("Auth controller functional test suite", () => {
       await request(app)
         .post("/api/v1/forgot_password")
         .send({ email: user.email })
-        .expect(200)
+        .expect(StatusCodes.OK)
 
       const passwordRecoveryToken = getPasswordRecoveryTokenFromMailBox()
 
       await request(app)
         .patch("/api/v1/forgot_password")
         .send({ token: passwordRecoveryToken, password: "new_password" })
-        .expect(200)
+        .expect(StatusCodes.OK)
 
       const sessionToken = await authTestUtils.login({
         app,
@@ -164,19 +177,19 @@ describe("Auth controller functional test suite", () => {
       await request(app)
         .post("/api/v1/forgot_password")
         .send({ email: user.email })
-        .expect(200)
+        .expect(StatusCodes.OK)
 
       const passwordRecoveryToken = getPasswordRecoveryTokenFromMailBox()
 
       await request(app)
         .patch("/api/v1/forgot_password")
         .send({ token: passwordRecoveryToken, password: "new_password" })
-        .expect(200)
+        .expect(StatusCodes.OK)
 
       const response = await request(app)
         .patch("/api/v1/forgot_password")
         .send({ token: passwordRecoveryToken, password: "some_other_password" })
-        .expect(400)
+        .expect(StatusCodes.BAD_REQUEST)
 
       expect(response.body).toEqual([{ message: "Token inválido ou expirado" }])
     })
@@ -192,19 +205,19 @@ describe("Auth controller functional test suite", () => {
       await request(app)
         .post("/api/v1/forgot_password")
         .send({ email: user.email })
-        .expect(200)
+        .expect(StatusCodes.OK)
 
       const passwordRecoveryToken = getPasswordRecoveryTokenFromMailBox()
 
       await request(app)
         .patch("/api/v1/forgot_password")
         .send({ token: passwordRecoveryToken, password: "new_password" })
-        .expect(200)
+        .expect(StatusCodes.OK)
 
       await request(app)
         .get(`/api/v1/users/${user.id}/pets`)
         .set("Authorization", sessionToken)
-        .expect(401)
+        .expect(StatusCodes.UNAUTHORIZED)
     })
   })
 })

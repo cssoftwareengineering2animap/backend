@@ -13,7 +13,7 @@ const bankAccountController = container.resolve(BankAccountController)
 router.post("/v1/hosts", withErrorHandler(hostController.createHost))
 
 router.post(
-  "/v1/hosts/bank_accounts",
+  "/v1/bank_accounts",
   authRequired,
   withErrorHandler(bankAccountController.createBankAccount)
 )

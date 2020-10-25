@@ -121,7 +121,5 @@ describe("Host controller functional test suite", () => {
     expect(response.status).toBe(201)
 
     expect(response.body.data).toMatchObject(R.omit(["password"], host))
-
-    console.log("aaaa", response.body)
   })
 })

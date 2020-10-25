@@ -23,6 +23,7 @@ import {
 import { Rating } from "./rating_entity"
 import { UserBlocking } from "./user_blocking_entity"
 import { BankAccount } from "./bank_account_entity"
+import { Tour } from "./tour_entity"
 
 const encryptionProvider = container.resolve<EncryptionProvider>(
   EncryptionProviderToken
@@ -64,6 +65,9 @@ export class Host extends BaseEntity {
 
   @OneToOne(() => BankAccount, account => account.owner)
   bankAccount: BankAccount
+
+  @OneToMany(() => Tour, tour => tour.host)
+  tours: Tour[]
 
   @CreateDateColumn({ name: "createdAt" })
   public createdAt: Date

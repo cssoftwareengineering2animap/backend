@@ -8,6 +8,7 @@ import { Rating } from "../../../domain/entities/rating_entity"
 import { File } from "../../../domain/entities/file_entity"
 import { Host } from "../../../domain/entities/host_entity"
 import { BankAccount } from "../../../domain/entities/bank_account_entity"
+import { Tour, TourStatus } from "../../../domain/entities/tour_entity"
 
 const entityFactoryMap = new Map()
 
@@ -43,9 +44,9 @@ entityFactoryMap.set(Pet, async (props?: Partial<Pet>) => {
 
   return {
     name: faker.name.firstName(),
-    birthday: moment(faker.date.past()).format("YYYY-MM-DD"),
-    sex: faker.random.arrayElement(["male", "female"]),
+    age: faker.random.number({ min: 0, max: 100 }),
     type: faker.random.alphaNumeric(10),
+    observations: faker.lorem.sentence(),
     owner,
     ownerId: owner.id,
     ...props,
@@ -70,6 +71,20 @@ entityFactoryMap.set(Rating, async (props?: Partial<Rating>) => {
     user,
     grader,
     pet,
+    ...props,
+  }
+})
+
+entityFactoryMap.set(Tour, async (props?: Partial<Tour>) => {
+  const host = await create(Host)
+  const pet = await create(Pet)
+
+  return {
+    scheduledFor: moment(faker.date.future()).format("YYYY-MM-DD hh:mm:ss"),
+    pet,
+    host,
+    status: TourStatus.pending,
+    tip: String(faker.random.number({ min: 1, max: 100 })),
     ...props,
   }
 })

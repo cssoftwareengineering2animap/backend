@@ -10,10 +10,12 @@ import {
   ManyToOne,
   CreateDateColumn,
   UpdateDateColumn,
+  OneToMany,
 } from "typeorm"
 import { ID } from "../../core/types/id"
 import { File } from "./file_entity"
 import { Rating } from "./rating_entity"
+import { Tour } from "./tour_entity"
 import { User } from "./user_entity"
 
 @Entity()
@@ -25,13 +27,13 @@ export class Pet extends BaseEntity {
   name: string
 
   @Column()
-  birthday: Date
-
-  @Column()
-  sex: "male" | "female"
+  age: number
 
   @Column()
   type: string
+
+  @Column({ nullable: true })
+  observations: string
 
   @OneToOne(() => File)
   profilePicture: File
@@ -45,11 +47,13 @@ export class Pet extends BaseEntity {
   @ManyToMany(() => File)
   @JoinTable()
   pictures: Promise<File[]>
-  // passeios[Relação]
 
   @ManyToMany(() => Rating, rating => rating.pet)
   @JoinTable()
   ratings: Promise<Rating[]>
+
+  @OneToMany(() => Tour, tour => tour.pet)
+  tours: Tour[]
 
   @CreateDateColumn({ name: "createdAt" })
   createdAt: Date

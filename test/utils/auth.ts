@@ -1,5 +1,6 @@
 import request from "supertest"
 import { Express } from "express"
+import { StatusCodes } from "http-status-codes"
 import { User } from "../../src/domain/entities/user_entity"
 import { Host } from "../../src/domain/entities/host_entity"
 
@@ -12,5 +13,5 @@ export const login = ({ app, client }: Props) =>
   request(app)
     .post("/api/v1/login")
     .send(client)
-    .expect(200)
+    .expect(StatusCodes.OK)
     .then(response => response.body.data.token)

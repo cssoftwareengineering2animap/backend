@@ -7,8 +7,8 @@ const get = (key: string): string => {
 }
 
 const keys = [
-  "HOST",
   "NODE_ENV",
+  "APP_HOST",
   "APP_KEY",
   "PORT",
   "REDIS_SESSION_HOST",
