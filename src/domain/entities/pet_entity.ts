@@ -30,9 +30,6 @@ export class Pet extends BaseEntity {
   age: number
 
   @Column()
-  sex: "male" | "female"
-
-  @Column()
   type: string
 
   @Column({ nullable: true })

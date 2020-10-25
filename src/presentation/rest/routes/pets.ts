@@ -24,14 +24,10 @@ router.get(
   withErrorHandler(petController.getUserPets)
 )
 
-router.post(
-  "/v1/users/:userid/pets",
-  authRequired,
-  withErrorHandler(petController.createPet)
-)
+router.post("/v1/pets", authRequired, withErrorHandler(petController.createPet))
 
 router.post(
-  "/v1/users/:userid/pets/:petId/pictures",
+  "/v1/pets/:petId/pictures",
   authRequired,
   upload.single("file"),
   withErrorHandler(petController.addPicture)

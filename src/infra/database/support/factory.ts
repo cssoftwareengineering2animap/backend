@@ -45,7 +45,6 @@ entityFactoryMap.set(Pet, async (props?: Partial<Pet>) => {
   return {
     name: faker.name.firstName(),
     age: faker.random.number({ min: 0, max: 100 }),
-    sex: faker.random.arrayElement(["male", "female"]),
     type: faker.random.alphaNumeric(10),
     observations: faker.lorem.sentence(),
     owner,

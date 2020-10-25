@@ -24,7 +24,7 @@ describe("Pet controller functional test suite", () => {
       pet.name = "a"
 
       const response = await request(app)
-        .post(`/api/v1/users/pets`)
+        .post(`/api/v1/pets`)
         .set("Authorization", token)
         .send(pet)
         .expect(400)
@@ -44,7 +44,7 @@ describe("Pet controller functional test suite", () => {
       pet.age = -1
 
       const response = await request(app)
-        .post(`/api/v1/users/pets`)
+        .post(`/api/v1/pets`)
         .set("Authorization", token)
         .send(pet)
         .expect(400)
@@ -66,7 +66,7 @@ describe("Pet controller functional test suite", () => {
       pet.age = 101
 
       const response = await request(app)
-        .post(`/api/v1/users/pets`)
+        .post(`/api/v1/pets`)
         .set("Authorization", token)
         .send(pet)
         .expect(400)
@@ -88,7 +88,7 @@ describe("Pet controller functional test suite", () => {
       pet.observations = "a".repeat(256)
 
       const response = await request(app)
-        .post(`/api/v1/users/pets`)
+        .post(`/api/v1/pets`)
         .set("Authorization", token)
         .send(pet)
         .expect(400)
@@ -97,24 +97,6 @@ describe("Pet controller functional test suite", () => {
         {
           message: "As observações podem conter no máximo 255 caracteres",
         },
-      ])
-    })
-
-    test("when sex is not informed or is an unexpected value, should return an error message", async () => {
-      const user = await factory.create(User)
-
-      const token = await authTestUtils.login({ app, client: user })
-
-      const pet = await factory.build(Pet, { sex: "unknown" })
-
-      const response = await request(app)
-        .post(`/api/v1/users/pets`)
-        .set("Authorization", token)
-        .send(pet)
-        .expect(400)
-
-      expect(response.body).toEqual([
-        { message: "O sexo do animal deve ser macho ou fêmea" },
       ])
     })
 
@@ -128,7 +110,7 @@ describe("Pet controller functional test suite", () => {
       pet.type = null
 
       const response = await request(app)
-        .post(`/api/v1/users/pets`)
+        .post(`/api/v1/pets`)
         .set("Authorization", token)
         .send(pet)
         .expect(400)
@@ -144,7 +126,7 @@ describe("Pet controller functional test suite", () => {
       const token = await authTestUtils.login({ app, client: pet.owner })
 
       const response = await request(app)
-        .post(`/api/v1/users/pets`)
+        .post(`/api/v1/pets`)
         .set("Authorization", token)
         .send(pet)
         .expect(201)
@@ -154,7 +136,6 @@ describe("Pet controller functional test suite", () => {
       expect(response.body.data).toMatchObject({
         name: pet.name,
         age: pet.age,
-        sex: pet.sex,
         type: pet.type,
         owner: {
           id: pet.owner.id,
@@ -175,7 +156,7 @@ describe("Pet controller functional test suite", () => {
             .build(Pet)
             .then(pet =>
               request(app)
-                .post(`/api/v1/users/pets`)
+                .post(`/api/v1/pets`)
                 .set("Authorization", token)
                 .send(pet)
                 .expect(201)
@@ -220,7 +201,7 @@ describe("Pet controller functional test suite", () => {
     })
   })
 
-  describe("POST /api/v1/users/pets/id/pictures", () => {
+  describe("POST /api/v1/pets/id/pictures", () => {
     test("should be able to upload pet pictures", async () => {
       const user = await factory.create(User)
 
@@ -229,7 +210,7 @@ describe("Pet controller functional test suite", () => {
       const token = await authTestUtils.login({ app, client: user })
 
       const response = await request(app)
-        .post(`/api/v1/users/pets/${pet.id}/pictures`)
+        .post(`/api/v1/pets/${pet.id}/pictures`)
         .set("Authorization", token)
         .field("displayOrder", 0)
         .attach("file", "test/fixtures/files/gohorse1.jpeg")
@@ -260,7 +241,7 @@ describe("Pet controller functional test suite", () => {
       )
 
       const response = await request(app)
-        .post(`/api/v1/users/pets/${pet.id}/pictures`)
+        .post(`/api/v1/pets/${pet.id}/pictures`)
         .set("Authorization", token)
         .field("displayOrder", 0)
         .attach("file", "test/fixtures/files/gohorse1.jpeg")

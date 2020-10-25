@@ -1,11 +1,4 @@
-import {
-  IsNotEmpty,
-  MinLength,
-  IsIn,
-  Min,
-  Max,
-  MaxLength,
-} from "class-validator"
+import { IsNotEmpty, MinLength, Min, Max, MaxLength } from "class-validator"
 
 export class CreatePetDto {
   constructor(props: CreatePetDto) {
@@ -18,11 +11,6 @@ export class CreatePetDto {
   @Min(0, { message: "A data de nascimento do pet deve ser mínimo 0" })
   @Max(100, { message: "A data de nascimento do pet deve ser máximo 100" })
   age: number
-
-  @IsIn(["male", "female"], {
-    message: "O sexo do animal deve ser macho ou fêmea",
-  })
-  sex: "male" | "female"
 
   @IsNotEmpty({ message: "O tipo de animal deve ser informado" })
   type: string
