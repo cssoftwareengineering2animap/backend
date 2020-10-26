@@ -126,17 +126,4 @@ describe("User controller functional test suite", () => {
 
     expect(response.body).toEqual([{ message: "Limite de fotos excedido" }])
   })
-
-  test("POST api/v1/users/:userId/blocked_users :: one user should be able to block another user", async () => {
-    const user = await factory.create(User)
-
-    const userThatWillBeBlocked = await factory.create(User)
-
-    const token = await authTestUtils.login({ app, client: user })
-
-    await request(app)
-      .post(`/api/v1/users/${userThatWillBeBlocked.id}/blocked_users`)
-      .set("Authorization", token)
-      .expect(StatusCodes.OK)
-  })
 })

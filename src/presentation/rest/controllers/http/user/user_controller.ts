@@ -7,8 +7,8 @@ import { envelope } from "../../../utils/envelope"
 import { validateDto } from "../../../../../core/utils/validate_dto"
 import { UploadUserPictureUseCase } from "../../../../../domain/usecases/user/upload_user_picture/upload_user_picture_use_case"
 import { FileUploadDto } from "../../../../../domain/usecases/dtos/file_upload_dto"
-import { BlockUserDto } from "../../../../../domain/usecases/user/block_user/block_user_dto"
-import { BlockUserUseCase } from "../../../../../domain/usecases/user/block_user/block_user_use_case"
+import { BlockUserUseCase } from "../../../../../domain/usecases/blocking/block_user/block_user_use_case"
+import { BlockUserDto } from "../../../../../domain/usecases/blocking/block_user/block_user_dto"
 
 @injectable()
 export class UserController {
@@ -51,8 +51,8 @@ export class UserController {
 
   blockUser = async (request: Request, response: Response) => {
     const dto = new BlockUserDto({
-      user: request.context.user,
-      userThatWillBeBlockedId: request.params.userId,
+      user: request.params.userId,
+      host: request.context.host,
     })
 
     await validateDto(dto)

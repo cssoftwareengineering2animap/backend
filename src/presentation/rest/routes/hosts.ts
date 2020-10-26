@@ -17,3 +17,9 @@ router.post(
   authRequired,
   withErrorHandler(bankAccountController.createBankAccount)
 )
+
+router.post(
+  `/v1/hosts/:hostId/blockings`,
+  authRequired,
+  withErrorHandler(hostController.blockHost)
+)

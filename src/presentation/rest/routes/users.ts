@@ -20,9 +20,3 @@ router.post(
   upload.single("file"),
   withErrorHandler(userController.addPicture)
 )
-
-router.post(
-  `/v1/users/:userId/blocked_users`,
-  authRequired,
-  withErrorHandler(userController.blockUser)
-)

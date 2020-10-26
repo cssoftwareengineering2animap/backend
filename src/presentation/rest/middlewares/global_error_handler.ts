@@ -29,5 +29,7 @@ export const globalErrorHandler = (
       .json([{ message: error.message }])
   }
 
+  console.error(error)
+
   return response.status(StatusCodes.INTERNAL_SERVER_ERROR).send()
 }
