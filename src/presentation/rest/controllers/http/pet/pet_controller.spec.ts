@@ -179,27 +179,6 @@ describe("Pet controller functional test suite", () => {
 
       expect(responsePetIds).toEqual(expectedPetIds)
     })
-
-    test("a blocked user should not be able to fetch the pets that belong to user that blocked him/her", async () => {
-      const blocker = await factory.create(User)
-      const blocked = await factory.create(User)
-
-      await request(app)
-        .post(`/api/v1/users/${blocked.id}/blocked_users`)
-        .set(
-          "Authorization",
-          await authTestUtils.login({ app, client: blocker })
-        )
-        .expect(StatusCodes.OK)
-
-      await request(app)
-        .get(`/api/v1/users/${blocker.id}/pets`)
-        .set(
-          "Authorization",
-          await authTestUtils.login({ app, client: blocked })
-        )
-        .expect(StatusCodes.FORBIDDEN)
-    })
   })
 
   describe("POST /api/v1/pets/id/pictures", () => {

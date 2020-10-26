@@ -21,7 +21,7 @@ import {
   EncryptionProviderToken,
 } from "../providers/encryption_provider"
 import { Rating } from "./rating_entity"
-import { UserBlocking } from "./user_blocking_entity"
+import { Blocking } from "./blocking_entity"
 
 const encryptionProvider = container.resolve<EncryptionProvider>(
   EncryptionProviderToken
@@ -55,11 +55,8 @@ export class User extends BaseEntity {
   @OneToMany(() => Rating, rating => rating.grader)
   gradings: Promise<Rating[]>
 
-  @OneToMany(() => UserBlocking, blocking => blocking.blocker)
-  blockedUsers: Promise<UserBlocking[]>
-
-  @OneToMany(() => UserBlocking, blocking => blocking.blocked)
-  blockedByUsers: Promise<UserBlocking[]>
+  @OneToMany(() => Blocking, blocking => blocking.user)
+  blockings: Promise<Blocking[]>
 
   @CreateDateColumn({ name: "createdAt" })
   public createdAt: Date
@@ -76,15 +73,4 @@ export class User extends BaseEntity {
 
     this.password = await encryptionProvider.hash(this.password)
   }
-
-  public isUserBlocked = (user: User | ID) =>
-    UserBlocking.createQueryBuilder("blocking")
-      .innerJoinAndSelect("blocking.blocker", "blocker")
-      .innerJoinAndSelect("blocking.blocked", "blocked")
-      .where("blocker.id = :blockerId and blocked.id = :blockedId", {
-        blockerId: this.id,
-        blockedId: typeof user === "string" ? user : user.id,
-      })
-      .getOne()
-      .then(Boolean)
 }

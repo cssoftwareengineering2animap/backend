@@ -1,9 +1,12 @@
 import request from "supertest"
 import * as R from "ramda"
+import { StatusCodes } from "http-status-codes"
 import { app } from "../../../server"
 import * as factory from "../../../../../infra/database/support/factory"
 import * as connection from "../../../../../infra/database/support/connection"
 import { Host } from "../../../../../domain/entities/host_entity"
+import { User } from "../../../../../domain/entities/user_entity"
+import * as authTestUtils from "../../../../../../test/utils/auth"
 
 describe("Host controller functional test suite", () => {
   beforeAll(connection.create)
@@ -21,7 +24,7 @@ describe("Host controller functional test suite", () => {
     )
 
     for (const response of responses) {
-      expect(response.status).toBe(400)
+      expect(response.status).toBe(StatusCodes.BAD_REQUEST)
       expect(response.body).toEqual([
         { message: "O nome deve conter no mínimo 4 letras" },
       ])
@@ -44,7 +47,7 @@ describe("Host controller functional test suite", () => {
     )
 
     for (const response of responses) {
-      expect(response.status).toBe(400)
+      expect(response.status).toBe(StatusCodes.BAD_REQUEST)
       expect(response.body).toEqual([
         { message: "O email deve estar em um formato válido" },
       ])
@@ -58,7 +61,7 @@ describe("Host controller functional test suite", () => {
 
     const response = await request(app).post("/api/v1/hosts").send(host)
 
-    expect(response.status).toBe(400)
+    expect(response.status).toBe(StatusCodes.BAD_REQUEST)
     expect(response.body).toEqual([{ message: "Esse email já está em uso" }])
   })
 
@@ -78,7 +81,7 @@ describe("Host controller functional test suite", () => {
     )
 
     for (const response of responses) {
-      expect(response.status).toBe(400)
+      expect(response.status).toBe(StatusCodes.BAD_REQUEST)
       expect(response.body).toEqual([
         { message: "A senha deve ter no mínimo 6 caracteres" },
       ])
@@ -92,7 +95,7 @@ describe("Host controller functional test suite", () => {
 
     const response = await request(app).post("/api/v1/hosts").send(host)
 
-    expect(response.status).toBe(400)
+    expect(response.status).toBe(StatusCodes.BAD_REQUEST)
     expect(response.body).toEqual([{ message: "Esse cpf já está em uso" }])
   })
 
@@ -108,7 +111,7 @@ describe("Host controller functional test suite", () => {
     )
 
     for (const response of responses) {
-      expect(response.status).toBe(400)
+      expect(response.status).toBe(StatusCodes.BAD_REQUEST)
       expect(response.body).toEqual([{ message: "O cpf deve ser válido" }])
     }
   })
@@ -118,8 +121,21 @@ describe("Host controller functional test suite", () => {
 
     const response = await request(app).post("/api/v1/hosts").send(host)
 
-    expect(response.status).toBe(201)
+    expect(response.status).toBe(StatusCodes.CREATED)
 
     expect(response.body.data).toMatchObject(R.omit(["password"], host))
+  })
+
+  test("POST api/v1/users/:userId/blockings :: one user should be able to block a host", async () => {
+    const user = await factory.create(User)
+
+    const host = await factory.create(Host)
+
+    const token = await authTestUtils.login({ app, client: user })
+
+    await request(app)
+      .post(`/api/v1/hosts/${host.id}/blockings`)
+      .set("Authorization", token)
+      .expect(StatusCodes.OK)
   })
 })

@@ -8,18 +8,19 @@ import {
   ManyToOne,
 } from "typeorm"
 import { ID } from "../../core/types/id"
+import { Host } from "./host_entity"
 import { User } from "./user_entity"
 
 @Entity()
-export class UserBlocking extends BaseEntity {
+export class Blocking extends BaseEntity {
   @PrimaryGeneratedColumn("uuid")
   id: ID
 
-  @ManyToOne(() => User, user => user.blockedUsers, { cascade: true })
-  blocker: User
+  @ManyToOne(() => User, user => user.blockings, { cascade: true })
+  user: User
 
-  @ManyToOne(() => User, user => user.blockedByUsers, { cascade: true })
-  blocked: User
+  @ManyToOne(() => Host, host => host.blockings, { cascade: true })
+  host: Host
 
   @CreateDateColumn({ name: "createdAt" })
   public createdAt: Date

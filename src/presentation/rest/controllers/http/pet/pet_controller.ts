@@ -34,7 +34,6 @@ export class PetController {
 
   getUserPets = async (request: Request, response: Response) => {
     const pets = await this.getUserPetsUseCase.execute({
-      user: request.context.user,
       userIdThatPetsBelongTo: request.params.userId,
     })
 

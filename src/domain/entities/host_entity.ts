@@ -21,7 +21,7 @@ import {
   EncryptionProviderToken,
 } from "../providers/encryption_provider"
 import { Rating } from "./rating_entity"
-import { UserBlocking } from "./user_blocking_entity"
+import { Blocking, } from "./blocking_entity"
 import { BankAccount } from "./bank_account_entity"
 import { Tour } from "./tour_entity"
 
@@ -57,11 +57,8 @@ export class Host extends BaseEntity {
   @OneToMany(() => Rating, rating => rating.grader)
   gradings: Promise<Rating[]>
 
-  @OneToMany(() => UserBlocking, blocking => blocking.blocker)
-  blockedUsers: Promise<UserBlocking[]>
-
-  @OneToMany(() => UserBlocking, blocking => blocking.blocked)
-  blockedByUsers: Promise<UserBlocking[]>
+  @OneToMany(() => Blocking, blocking => blocking.host)
+  blockings: Promise<Blocking[]>
 
   @OneToOne(() => BankAccount, account => account.owner)
   bankAccount: BankAccount
