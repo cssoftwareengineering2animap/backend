@@ -1,3 +1,11 @@
+import dotenv from "dotenv"
+
+const envFilePath = (process.env.NODE_ENV as string).includes("test")
+  ? ".env.testing"
+  : ".env"
+
+dotenv.config({ path: envFilePath })
+
 const get = (key: string): string => {
   const value = process.env[key]
   if (!value) {
