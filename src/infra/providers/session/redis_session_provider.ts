@@ -15,6 +15,7 @@ import {
 import { ApplicationError } from "../../../core/errors/application_error"
 import { RedisProvider } from "../redis/redis_provider"
 import { User } from "../../../domain/entities/user_entity"
+import { Host } from "../../../domain/entities/host_entity"
 
 const ONE_WEEK_IN_SECONDS = 604800
 
@@ -50,8 +51,8 @@ export class RedisSessionProvider implements SessionProvider {
     return sessionToken
   }
 
-  public destroyUserSessions = async (user: User | ID) => {
-    const id = typeof user === "string" ? user : user.id
+  public destroySessionsFor = async (client: User | Host | ID) => {
+    const id = typeof client === "string" ? client : client.id
     await this.redisProvider.del(this.sessionKeyFor(id))
   }
 

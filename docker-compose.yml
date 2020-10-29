@@ -15,6 +15,18 @@ services:
       - ./postgres:/data/postgres
     networks:
       - animap
+
+  pgadmin:
+    image: dpage/pgadmin4
+    ports:
+      - 5454:5454/tcp
+    environment:
+      - PGADMIN_DEFAULT_EMAIL=admin@mydomain.com
+      - PGADMIN_DEFAULT_PASSWORD=postgres
+      - PGADMIN_LISTEN_PORT=5454
+    networks:
+      - animap
+
   animap_redis_dev:
     container_name: animap_redis_dev
     image: redis

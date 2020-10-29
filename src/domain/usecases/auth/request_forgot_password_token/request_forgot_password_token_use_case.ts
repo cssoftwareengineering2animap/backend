@@ -9,6 +9,7 @@ import {
   MailProvider,
   MailProviderToken,
 } from "../../../providers/mail_provider"
+import { Host } from "../../../entities/host_entity"
 
 @injectable()
 export class RequestForgotPasswordTokenUseCase {
@@ -18,24 +19,38 @@ export class RequestForgotPasswordTokenUseCase {
     @inject(MailProviderToken) private readonly mailProvider: MailProvider
   ) {}
 
-  execute = async ({ email }: RequestForgotPasswordTokenDto) => {
-    const user = await User.findOne({ where: { email } })
+  private findByEmail = async (email: string) => {
+    const [user, host] = await Promise.all([
+      User.findOne({ where: { email } }),
+      Host.findOne({ where: { email } }),
+    ])
 
-    if (!user) {
+    return user ?? host
+  }
+
+  execute = async ({ email }: RequestForgotPasswordTokenDto) => {
+    const client = await this.findByEmail(email)
+
+    if (!client) {
       throw new ValidationError([{ message: "Email não encontrado" }])
     }
 
     const token = cuid.slug().toUpperCase()
 
+    const payload = {
+      id: client.id,
+      type: client instanceof User ? "user" : "host",
+    }
+
     await this.redisProvider.setex(
       token,
       Number(env.PASSWORD_RECOVERY_TOKEN_EXPIRATION_IN_SECONDS),
-      user.id
+      JSON.stringify(payload)
     )
 
     await this.mailProvider.send({
       from: "naorespondae@animap.com.br",
-      to: user.email,
+      to: client.email,
       subject: `Animap - Seu código é ${token}`,
       body: `<h1>Seu código de recuperação de senha é ${token}</h1>`,
     })
