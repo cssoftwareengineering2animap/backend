@@ -1,4 +1,5 @@
 import { ID } from "../../core/types/id"
+import { Host } from "../entities/host_entity"
 import { User } from "../entities/user_entity"
 
 export type SessionToken = string
@@ -16,7 +17,7 @@ export interface SessionProvider {
   create: (clientId: ID, sessionType: SessionType) => Promise<SessionToken>
   destroy: (session: SessionToken) => Promise<void>
   validateToken: (sessionToken: SessionToken) => Promise<SessionData | null>
-  destroyUserSessions: (user: User | ID) => Promise<void>
+  destroySessionsFor: (client: User | Host | ID) => Promise<void>
 }
 
 export const SessionProviderToken = Symbol.for("SessionProvider")

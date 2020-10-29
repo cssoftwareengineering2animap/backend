@@ -117,7 +117,7 @@ describe("Auth controller functional test suite", () => {
     const getPasswordRecoveryTokenFromMailBox = () =>
       mailProvider.mailbox[0].subject.split(" ").pop()
 
-    test("POST api/v1/forgot_password :: when email does not exist should return an error message", async () => {
+    test("when email does not exist should return an error message", async () => {
       const email = faker.internet.email()
 
       const response = await request(app)
@@ -128,18 +128,7 @@ describe("Auth controller functional test suite", () => {
       expect(response.body).toEqual([{ message: "Email não encontrado" }])
     })
 
-    test("POST api/v1/forgot_password :: when email exists should send an email with a password recovery token", async () => {
-      const user = await factory.create(User)
-
-      await request(app)
-        .post("/api/v1/forgot_password")
-        .send({ email: user.email })
-        .expect(StatusCodes.OK)
-
-      expect(mailProvider.mailbox[0]).toMatchObject({ to: user.email })
-    })
-
-    test("PATCH api/v1/forgot_password :: when password recovery token is invalid, should return an error message", async () => {
+    test("when password recovery token is invalid, should return an error message", async () => {
       const response = await request(app)
         .patch("/api/v1/forgot_password")
         .send({ token: "any_invalid_token", password: "new_password" })
@@ -148,30 +137,7 @@ describe("Auth controller functional test suite", () => {
       expect(response.body).toEqual([{ message: "Token inválido ou expirado" }])
     })
 
-    test("PATCH api/v1/forgot_password :: when password recovery token is valid, should change user password", async () => {
-      const user = await factory.create(User)
-
-      await request(app)
-        .post("/api/v1/forgot_password")
-        .send({ email: user.email })
-        .expect(StatusCodes.OK)
-
-      const passwordRecoveryToken = getPasswordRecoveryTokenFromMailBox()
-
-      await request(app)
-        .patch("/api/v1/forgot_password")
-        .send({ token: passwordRecoveryToken, password: "new_password" })
-        .expect(StatusCodes.OK)
-
-      const sessionToken = await authTestUtils.login({
-        app,
-        client: { email: user.email, password: "new_password" },
-      })
-
-      expect(sessionToken).toBeDefined()
-    })
-
-    test("PATCH api/v1/forgot_password :: when password recovery is used, it cant be used again", async () => {
+    test("when password recovery is used, it cant be used again", async () => {
       const user = await factory.create(User)
 
       await request(app)
@@ -194,30 +160,128 @@ describe("Auth controller functional test suite", () => {
       expect(response.body).toEqual([{ message: "Token inválido ou expirado" }])
     })
 
-    test("PATCH api/v1/forgot_password :: when user resets password, should invalidate user sessions", async () => {
-      const user = await factory.create(User)
+    describe("as an user", () => {
+      test("when email exists, should send an email with a password recovery token", async () => {
+        const user = await factory.create(User)
 
-      const sessionToken = await authTestUtils.login({
-        app,
-        client: user,
+        await request(app)
+          .post("/api/v1/forgot_password")
+          .send({ email: user.email })
+          .expect(StatusCodes.OK)
+
+        expect(mailProvider.mailbox[0]).toMatchObject({ to: user.email })
       })
 
-      await request(app)
-        .post("/api/v1/forgot_password")
-        .send({ email: user.email })
-        .expect(StatusCodes.OK)
+      test("when password recovery token is valid, should change user password", async () => {
+        const user = await factory.create(User)
 
-      const passwordRecoveryToken = getPasswordRecoveryTokenFromMailBox()
+        await request(app)
+          .post("/api/v1/forgot_password")
+          .send({ email: user.email })
+          .expect(StatusCodes.OK)
 
-      await request(app)
-        .patch("/api/v1/forgot_password")
-        .send({ token: passwordRecoveryToken, password: "new_password" })
-        .expect(StatusCodes.OK)
+        const passwordRecoveryToken = getPasswordRecoveryTokenFromMailBox()
 
-      await request(app)
-        .get(`/api/v1/users/${user.id}/pets`)
-        .set("Authorization", sessionToken)
-        .expect(StatusCodes.UNAUTHORIZED)
+        await request(app)
+          .patch("/api/v1/forgot_password")
+          .send({ token: passwordRecoveryToken, password: "new_password" })
+          .expect(StatusCodes.OK)
+
+        const sessionToken = await authTestUtils.login({
+          app,
+          client: { email: user.email, password: "new_password" },
+        })
+
+        expect(sessionToken).toBeDefined()
+      })
+
+      test("when user resets password, should invalidate user sessions", async () => {
+        const user = await factory.create(User)
+
+        const sessionToken = await authTestUtils.login({
+          app,
+          client: user,
+        })
+
+        await request(app)
+          .post("/api/v1/forgot_password")
+          .send({ email: user.email })
+          .expect(StatusCodes.OK)
+
+        const passwordRecoveryToken = getPasswordRecoveryTokenFromMailBox()
+
+        await request(app)
+          .patch("/api/v1/forgot_password")
+          .send({ token: passwordRecoveryToken, password: "new_password" })
+          .expect(StatusCodes.OK)
+
+        await request(app)
+          .get(`/api/v1/users/${user.id}/pets`)
+          .set("Authorization", sessionToken)
+          .expect(StatusCodes.UNAUTHORIZED)
+      })
+    })
+
+    describe("As a host", () => {
+      test("when email exists, should send an email with a password recovery token", async () => {
+        const host = await factory.create(Host)
+
+        await request(app)
+          .post("/api/v1/forgot_password")
+          .send({ email: host.email })
+          .expect(StatusCodes.OK)
+
+        expect(mailProvider.mailbox[0]).toMatchObject({ to: host.email })
+      })
+
+      test("when password recovery token is valid, should change host password", async () => {
+        const host = await factory.create(Host)
+
+        await request(app)
+          .post("/api/v1/forgot_password")
+          .send({ email: host.email })
+          .expect(StatusCodes.OK)
+
+        const passwordRecoveryToken = getPasswordRecoveryTokenFromMailBox()
+
+        await request(app)
+          .patch("/api/v1/forgot_password")
+          .send({ token: passwordRecoveryToken, password: "new_password" })
+          .expect(StatusCodes.OK)
+
+        const sessionToken = await authTestUtils.login({
+          app,
+          client: { email: host.email, password: "new_password" },
+        })
+
+        expect(sessionToken).toBeDefined()
+      })
+
+      test("when host resets password, should invalidate host sessions", async () => {
+        const host = await factory.create(Host)
+
+        const sessionToken = await authTestUtils.login({
+          app,
+          client: host,
+        })
+
+        await request(app)
+          .post("/api/v1/forgot_password")
+          .send({ email: host.email })
+          .expect(StatusCodes.OK)
+
+        const passwordRecoveryToken = getPasswordRecoveryTokenFromMailBox()
+
+        await request(app)
+          .patch("/api/v1/forgot_password")
+          .send({ token: passwordRecoveryToken, password: "new_password" })
+          .expect(StatusCodes.OK)
+
+        await request(app)
+          .get(`/api/v1/pets/feed`)
+          .set("Authorization", sessionToken)
+          .expect(StatusCodes.UNAUTHORIZED)
+      })
     })
   })
 })
