@@ -2,7 +2,7 @@ import { inject, injectable } from "tsyringe"
 import { ResetPasswordWithForgotPasswordTokenDto } from "../.."
 import { ValidationError } from "../../../../core/errors"
 import { RedisProvider } from "../../../../infra/providers"
-import { User } from "../../../entities"
+import { User, Host } from "../../../entities"
 import { SessionProviderToken, SessionProvider } from "../../../providers"
 
 @injectable()
@@ -14,24 +14,31 @@ export class ResetPasswordWithForgotPasswordTokenUseCase {
     private readonly sessionProvider: SessionProvider
   ) {}
 
+  private findById = (payload: { id: ID; type: "host" | "user" }) =>
+    payload.type === "host"
+      ? Host.findOneOrFail(payload.id)
+      : User.findOneOrFail(payload.id)
+
   execute = async ({
     token,
     password,
   }: ResetPasswordWithForgotPasswordTokenDto) => {
-    const userId = await this.redisProvider.get(token)
+    const payload = await this.redisProvider
+      .get(token)
+      .then(value => (value ? JSON.parse(value) : null))
 
-    if (!userId) {
+    if (!payload) {
       throw new ValidationError([{ message: "Token inválido ou expirado" }])
     }
 
-    const user = await User.findOneOrFail(userId)
+    const client = await this.findById(payload)
 
-    user.password = password
+    client.password = password
 
-    await user.save()
+    await client.save()
 
     await this.redisProvider.del(token)
 
-    await this.sessionProvider.destroyUserSessions(user)
+    await this.sessionProvider.destroySessionsFor(client)
   }
 }

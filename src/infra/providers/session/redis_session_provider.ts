@@ -13,6 +13,7 @@ import {
   SessionToken,
   SessionData,
 } from "../../../domain/providers"
+import { User, Host } from "../../../domain/entities"
 
 const ONE_WEEK_IN_SECONDS = 604800
 
@@ -48,8 +49,9 @@ export class RedisSessionProvider implements SessionProvider {
     return sessionToken
   }
 
-  public destroyUserSessions = async (user: { id: ID } | ID) => {
-    const id = typeof user === "string" ? user : user.id
+
+  public destroySessionsFor = async (client: User | Host | ID) => {
+    const id = typeof client === "string" ? client : client.id
     await this.redisProvider.del(this.sessionKeyFor(id))
   }
 
