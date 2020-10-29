@@ -1,8 +1,7 @@
 import request from "supertest"
 import { Express } from "express"
 import { StatusCodes } from "http-status-codes"
-import { User } from "../../src/domain/entities/user_entity"
-import { Host } from "../../src/domain/entities/host_entity"
+import { User, Host } from "../../src/domain/entities"
 
 interface Props {
   app: Express

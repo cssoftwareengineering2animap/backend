@@ -1,6 +1,5 @@
-import { Pagination } from "../../core/types/pagination"
-import { Host } from "../../domain/entities/host_entity"
-import { User } from "../../domain/entities/user_entity"
+import { Pagination } from "../../core/types"
+import { User, Host } from "../../domain/entities"
 
 export interface Context {
   user: User

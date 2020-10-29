@@ -1,7 +1,6 @@
 import { IsEmail, MinLength } from "class-validator"
-import { unique } from "../../../validators/unique"
+import { unique, cpf } from "../../../validators"
 import { Host } from "../../../entities/host_entity"
-import { cpf } from "../../../validators/cpf"
 
 export class CreateHostDto {
   constructor(props: CreateHostDto) {

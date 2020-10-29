@@ -2,7 +2,7 @@ import { IsIn, IsNotEmpty, Min } from "class-validator"
 import { ID } from "../../../../core/types/id"
 import { Host } from "../../../entities/host_entity"
 import { TourStatus } from "../../../entities/tour_entity"
-import { isFutureDate } from "../../../validators/is_future_date"
+import { isFutureDate } from "../../../validators"
 
 export class CreateTourDto {
   constructor(props: CreateTourDto) {

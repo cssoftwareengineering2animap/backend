@@ -2,12 +2,14 @@ import { inject, injectable } from "tsyringe"
 
 import { Request, Response } from "express"
 import { StatusCodes } from "http-status-codes"
-import { CreateHostDto } from "../../../../../domain/usecases/host/create_host/create_host_dto"
-import { validateDto } from "../../../../../core/utils/validate_dto"
-import { envelope } from "../../../utils/envelope"
-import { CreateHostUseCase } from "../../../../../domain/usecases/host/create_host/create_host_use_case"
-import { BlockHostDto } from "../../../../../domain/usecases/blocking/block_host/block_host_dto"
-import { BlockHostUseCase } from "../../../../../domain/usecases/blocking/block_host/block_host_use_case"
+import {
+  CreateHostUseCase,
+  BlockHostUseCase,
+  CreateHostDto,
+  BlockHostDto,
+} from "../../../../../domain/usecases"
+import { envelope } from "../../../utils"
+import { validateDto } from "../../../../../core/utils"
 
 @injectable()
 export class HostController {

@@ -3,8 +3,7 @@ import { startSocketServer, startHttpServer } from "../../../server"
 import { env } from "../../../../../config/env"
 
 import * as factory from "../../../../../infra/database/support/factory"
-import { User } from "../../../../../domain/entities/user_entity"
-import { Message } from "../../../../../domain/entities/message_entity"
+import { User, Message } from "../../../../../domain/entities"
 
 const connectSocket = () =>
   new Promise<SocketIOClient.Socket>((resolve, reject) => {

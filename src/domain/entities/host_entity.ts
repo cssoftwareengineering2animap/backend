@@ -15,19 +15,9 @@ import {
 } from "typeorm"
 import { container } from "tsyringe"
 import { ID } from "../../core/types/id"
-import { File } from "./file_entity"
-import {
-  EncryptionProvider,
-  EncryptionProviderToken,
-} from "../providers/encryption_provider"
-import { Rating } from "./rating_entity"
-import { Blocking, } from "./blocking_entity"
-import { BankAccount } from "./bank_account_entity"
-import { Tour } from "./tour_entity"
 
-const encryptionProvider = container.resolve<EncryptionProvider>(
-  EncryptionProviderToken
-)
+import { EncryptionProvider, EncryptionProviderToken } from "../providers"
+import { Rating, Blocking, BankAccount, Tour, File } from "."
 
 @Entity()
 export class Host extends BaseEntity {
@@ -78,6 +68,10 @@ export class Host extends BaseEntity {
     if (!this.password) {
       return
     }
+
+    const encryptionProvider = container.resolve<EncryptionProvider>(
+      EncryptionProviderToken
+    )
 
     this.password = await encryptionProvider.hash(this.password)
   }

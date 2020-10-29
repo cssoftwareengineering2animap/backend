@@ -2,7 +2,7 @@ import crypto from "crypto"
 import { Request } from "express"
 import multer, { FileFilterCallback, Options } from "multer"
 import path from "path"
-import { File } from "../domain/entities/file_entity"
+import { File } from "../domain/entities"
 
 const megaBits = (quantity: number) => quantity * 1024 * 1024
 const dest = path.resolve(__dirname, "..", "..", "public")

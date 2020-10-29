@@ -1,8 +1,8 @@
 import * as bcrypt from "bcrypt"
 import crypto from "crypto"
 import { singleton } from "tsyringe"
-import { EncryptionProvider } from "../../../domain/providers/encryption_provider"
-import { env } from "../../../config/env"
+import { env } from "../../../config"
+import { EncryptionProvider } from "../../../domain/providers"
 
 const SALT_ROUNDS = 10
 

@@ -1,12 +1,9 @@
 import { inject, injectable } from "tsyringe"
-import { ValidationError } from "../../../../core/errors/validation_error"
-import { RedisProvider } from "../../../../infra/providers/redis/redis_provider"
-import { User } from "../../../entities/user_entity"
-import {
-  SessionProvider,
-  SessionProviderToken,
-} from "../../../providers/session_provider"
-import { ResetPasswordWithForgotPasswordTokenDto } from "./reset_password_with_forgot_password_token_dto"
+import { ResetPasswordWithForgotPasswordTokenDto } from "../.."
+import { ValidationError } from "../../../../core/errors"
+import { RedisProvider } from "../../../../infra/providers"
+import { User } from "../../../entities"
+import { SessionProviderToken, SessionProvider } from "../../../providers"
 
 @injectable()
 export class ResetPasswordWithForgotPasswordTokenUseCase {

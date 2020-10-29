@@ -1,5 +1,5 @@
 import { injectable } from "tsyringe"
-import { ForbiddenError } from "../../../../core/errors/forbidden_error"
+import { ForbiddenError } from "../../../../core/errors"
 import { Tour, TourStatus } from "../../../entities/tour_entity"
 import { CompleteTourDto } from "./complete_tour_dto"
 

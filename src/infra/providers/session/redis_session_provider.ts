@@ -1,20 +1,18 @@
 import * as uuid from "uuid"
 import { inject, singleton } from "tsyringe"
 import moment from "moment"
+// eslint-disable-next-line import/no-cycle
+import { RedisProvider } from ".."
+import { ApplicationError } from "../../../core/errors"
+import { ID } from "../../../core/types"
 import {
   SessionProvider,
+  EncryptionProviderToken,
+  EncryptionProvider,
+  SessionType,
   SessionToken,
   SessionData,
-  SessionType,
-} from "../../../domain/providers/session_provider"
-import { ID } from "../../../core/types/id"
-import {
-  EncryptionProvider,
-  EncryptionProviderToken,
-} from "../../../domain/providers/encryption_provider"
-import { ApplicationError } from "../../../core/errors/application_error"
-import { RedisProvider } from "../redis/redis_provider"
-import { User } from "../../../domain/entities/user_entity"
+} from "../../../domain/providers"
 
 const ONE_WEEK_IN_SECONDS = 604800
 
@@ -50,7 +48,7 @@ export class RedisSessionProvider implements SessionProvider {
     return sessionToken
   }
 
-  public destroyUserSessions = async (user: User | ID) => {
+  public destroyUserSessions = async (user: { id: ID } | ID) => {
     const id = typeof user === "string" ? user : user.id
     await this.redisProvider.del(this.sessionKeyFor(id))
   }

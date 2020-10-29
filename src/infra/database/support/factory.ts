@@ -2,13 +2,16 @@
 import * as faker from "faker"
 import { br as fakerBr } from "faker-br"
 import moment from "moment"
-import { User } from "../../../domain/entities/user_entity"
-import { Pet } from "../../../domain/entities/pet_entity"
-import { Rating } from "../../../domain/entities/rating_entity"
-import { File } from "../../../domain/entities/file_entity"
-import { Host } from "../../../domain/entities/host_entity"
-import { BankAccount } from "../../../domain/entities/bank_account_entity"
-import { Tour, TourStatus } from "../../../domain/entities/tour_entity"
+import {
+  User,
+  Pet,
+  Rating,
+  File,
+  Host,
+  BankAccount,
+  Tour,
+  TourStatus,
+} from "../../../domain/entities"
 
 const entityFactoryMap = new Map()
 

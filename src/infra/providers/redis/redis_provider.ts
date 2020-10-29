@@ -2,7 +2,7 @@ import { singleton } from "tsyringe"
 import Redis from "ioredis"
 import * as R from "ramda"
 import { connections } from "../../../config/redis"
-import { ApplicationError } from "../../../core/errors/application_error"
+import { ApplicationError } from "../../../core/errors"
 
 @singleton()
 export class RedisProvider {

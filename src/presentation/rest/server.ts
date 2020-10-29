@@ -1,8 +1,3 @@
-/* eslint-disable */
-import "reflect-metadata"
-import * as container from "./container"
-container.register()
-
 import http, { Server } from "http"
 import express from "express"
 import cors from "cors"
@@ -10,15 +5,12 @@ import socketio from "socket.io"
 import socketioRedisAdapter from "socket.io-redis"
 import { container as tsyringeContainer } from "tsyringe"
 import path from "path"
-import { env } from "../../config/env"
-import { loadRoutes } from "./utils/load_routes"
+import { env } from "../../config"
+import { loadRoutes } from "./utils"
 import * as connection from "../../infra/database/support/connection"
-import { globalErrorHandler } from "./middlewares/global_error_handler"
-import { ChatController } from "./controllers/ws/chat/chat_controller"
-import { AckFunction, Message } from "./controllers/ws/types"
-import { clampPagination } from "./middlewares/clamp_pagination"
-
-container.register()
+import { AckFunction } from "./controllers/ws/types"
+import { clampPagination, globalErrorHandler } from "./middlewares"
+import { ChatController, Message } from "./controllers/ws"
 
 interface ServerStartResult {
   server: Server
@@ -31,9 +23,7 @@ export const app = express()
   .use(cors())
   .use(
     "/public",
-    express.static(
-      path.resolve(__dirname, "..", "..", "..", "public")
-    )
+    express.static(path.resolve(__dirname, "..", "..", "..", "public"))
   )
   .use(clampPagination)
 

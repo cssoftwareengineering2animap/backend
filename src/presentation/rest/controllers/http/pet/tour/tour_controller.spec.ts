@@ -6,9 +6,7 @@ import * as factory from "../../../../../../infra/database/support/factory"
 import * as connection from "../../../../../../infra/database/support/connection"
 import * as authTestUtils from "../../../../../../../test/utils/auth"
 import { app } from "../../../../server"
-import { Tour, TourStatus } from "../../../../../../domain/entities/tour_entity"
-import { User } from "../../../../../../domain/entities/user_entity"
-import { Pet } from "../../../../../../domain/entities/pet_entity"
+import { Tour, TourStatus, User, Pet } from "../../../../../../domain/entities"
 
 describe("Tour controller functional test suite", () => {
   beforeAll(connection.create)

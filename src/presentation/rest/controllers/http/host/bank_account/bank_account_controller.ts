@@ -1,10 +1,12 @@
 import { inject, injectable } from "tsyringe"
 import { Request, Response } from "express"
 import { StatusCodes } from "http-status-codes"
-import { validateDto } from "../../../../../../core/utils/validate_dto"
-import { envelope } from "../../../../utils/envelope"
-import { CreateBankAccountDto } from "../../../../../../domain/usecases/host/bank_account/create_bank_account/create_bank_account_dto"
-import { CreateBankAccountUseCase } from "../../../../../../domain/usecases/host/bank_account/create_bank_account/create_bank_account_use_case"
+import {
+  CreateBankAccountUseCase,
+  CreateBankAccountDto,
+} from "../../../../../../domain/usecases"
+import { envelope } from "../../../../utils"
+import { validateDto } from "../../../../../../core/utils"
 
 @injectable()
 export class BankAccountController {

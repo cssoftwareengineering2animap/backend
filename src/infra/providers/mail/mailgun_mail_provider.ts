@@ -1,10 +1,7 @@
 import { singleton } from "tsyringe"
 import mailgun from "mailgun-js"
-import { env } from "../../../config/env"
-import {
-  MailProvider,
-  SendMailOptions,
-} from "../../../domain/providers/mail_provider"
+import { env } from "../../../config"
+import { MailProvider, SendMailOptions } from "../../../domain/providers"
 
 const mg = mailgun({
   apiKey: env.MAILGUN_API_KEY,

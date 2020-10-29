@@ -1,13 +1,12 @@
 import { container } from "tsyringe"
 import { StatusCodes } from "http-status-codes"
 import { Request, Response, NextFunction } from "express"
+import { User, Host } from "../../../domain/entities"
 import {
-  SessionData,
   SessionProvider,
   SessionProviderToken,
-} from "../../../domain/providers/session_provider"
-import { User } from "../../../domain/entities/user_entity"
-import { Host } from "../../../domain/entities/host_entity"
+  SessionData,
+} from "../../../domain/providers"
 
 const sessionProvider = container.resolve<SessionProvider>(SessionProviderToken)
 

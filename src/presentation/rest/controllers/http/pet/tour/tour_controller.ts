@@ -1,19 +1,21 @@
 import { injectable } from "tsyringe"
 import { Request, Response } from "express"
 import { StatusCodes } from "http-status-codes"
-import { CreateTourDto } from "../../../../../../domain/usecases/tour/create_tour/create_tour_dto"
-import { TourStatus } from "../../../../../../domain/entities/tour_entity"
-import { CreateTourUseCase } from "../../../../../../domain/usecases/tour/create_tour/create_tour_use_case"
-import { validateDto } from "../../../../../../core/utils/validate_dto"
-import { envelope } from "../../../../utils/envelope"
-import { DenyTourUseCase } from "../../../../../../domain/usecases/tour/deny_tour/deny_tour_use_case"
-import { AcceptTourUseCase } from "../../../../../../domain/usecases/tour/accept_tour/accept_tour_use_case"
-import { CompleteTourUseCase } from "../../../../../../domain/usecases/tour/complete_tour/complete_tour_use_case"
-import { DenyTourDto } from "../../../../../../domain/usecases/tour/deny_tour/deny_tour_dto"
-import { AcceptTourDto } from "../../../../../../domain/usecases/tour/accept_tour/accept_tour_dto"
-import { CompleteTourDto } from "../../../../../../domain/usecases/tour/complete_tour/complete_tour_dto"
-import { GetTourFeedDto } from "../../../../../../domain/usecases/tour/get_tour_feed/get_tour_feed_dto"
-import { GetTourFeedUseCase } from "../../../../../../domain/usecases/tour/get_tour_feed/get_tour_feed_use_case"
+import { validateDto } from "../../../../../../core/utils"
+import { TourStatus } from "../../../../../../domain/entities"
+import {
+  CreateTourDto,
+  CreateTourUseCase,
+  DenyTourUseCase,
+  AcceptTourUseCase,
+  CompleteTourUseCase,
+  GetTourFeedUseCase,
+  DenyTourDto,
+  AcceptTourDto,
+  CompleteTourDto,
+  GetTourFeedDto,
+} from "../../../../../../domain/usecases"
+import { envelope } from "../../../../utils"
 
 @injectable()
 export class TourController {
