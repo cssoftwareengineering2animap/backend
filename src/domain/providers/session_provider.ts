@@ -1,6 +1,6 @@
 import { ID } from "../../core/types/id"
-import { Host } from "../entities/host_entity"
-import { User } from "../entities/user_entity"
+import { Host, User } from "../entities"
+
 
 export type SessionToken = string
 

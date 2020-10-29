@@ -1,5 +1,5 @@
 import { IsNotEmpty, IsEmail, MinLength } from "class-validator"
-import { unique } from "../../../validators/unique"
+import { unique } from "../../../validators"
 import { User } from "../../../entities/user_entity"
 
 export class CreateUserDto {

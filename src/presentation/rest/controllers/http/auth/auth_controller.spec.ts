@@ -5,13 +5,12 @@ import { StatusCodes } from "http-status-codes"
 import { app } from "../../../server"
 import * as factory from "../../../../../infra/database/support/factory"
 import * as connection from "../../../../../infra/database/support/connection"
-import { User } from "../../../../../domain/entities/user_entity"
+import { User, Host } from "../../../../../domain/entities"
 import * as authTestUtils from "../../../../../../test/utils/auth"
 import {
   MailProvider,
   MailProviderToken,
-} from "../../../../../domain/providers/mail_provider"
-import { Host } from "../../../../../domain/entities/host_entity"
+} from "../../../../../domain/providers"
 
 describe("Auth controller functional test suite", () => {
   beforeAll(connection.create)

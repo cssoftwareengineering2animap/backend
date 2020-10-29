@@ -1,14 +1,16 @@
 import { injectable, inject } from "tsyringe"
 import { StatusCodes } from "http-status-codes"
 import { Request, Response } from "express"
-import { CreateUserUseCase } from "../../../../../domain/usecases/user/create_user/create_user_use_case"
-import { CreateUserDto } from "../../../../../domain/usecases/user/create_user/create_user_dto"
-import { envelope } from "../../../utils/envelope"
-import { validateDto } from "../../../../../core/utils/validate_dto"
-import { UploadUserPictureUseCase } from "../../../../../domain/usecases/user/upload_user_picture/upload_user_picture_use_case"
-import { FileUploadDto } from "../../../../../domain/usecases/dtos/file_upload_dto"
-import { BlockUserUseCase } from "../../../../../domain/usecases/blocking/block_user/block_user_use_case"
-import { BlockUserDto } from "../../../../../domain/usecases/blocking/block_user/block_user_dto"
+import { validateDto } from "../../../../../core/utils"
+import {
+  CreateUserUseCase,
+  UploadUserPictureUseCase,
+  BlockUserUseCase,
+  CreateUserDto,
+  FileUploadDto,
+  BlockUserDto,
+} from "../../../../../domain/usecases"
+import { envelope } from "../../../utils"
 
 @injectable()
 export class UserController {

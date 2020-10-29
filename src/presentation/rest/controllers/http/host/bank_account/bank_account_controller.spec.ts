@@ -5,7 +5,7 @@ import * as factory from "../../../../../../infra/database/support/factory"
 import * as connection from "../../../../../../infra/database/support/connection"
 import { app } from "../../../../server"
 import * as authTestUtils from "../../../../../../../test/utils/auth"
-import { BankAccount } from "../../../../../../domain/entities/bank_account_entity"
+import { BankAccount } from "../../../../../../domain/entities"
 
 describe("Host BankAccount controller functional test suite", () => {
   beforeAll(connection.create)

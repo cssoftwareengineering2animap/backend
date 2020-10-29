@@ -1,14 +1,16 @@
 import { injectable, inject } from "tsyringe"
 import { Request, Response } from "express"
 import { StatusCodes } from "http-status-codes"
-import { validateDto } from "../../../../../core/utils/validate_dto"
-import { CreatePetUseCase } from "../../../../../domain/usecases/pet/create_pet/create_pet_use_case"
-import { envelope } from "../../../utils/envelope"
-import { CreatePetDto } from "../../../../../domain/usecases/pet/create_pet/create_pet_dto"
-import { UploadPetPictureUseCase } from "../../../../../domain/usecases/pet/upload_pet_picture/upload_pet_picture_use_case"
-import { FileUploadDto } from "../../../../../domain/usecases/dtos/file_upload_dto"
-import { GetPetsFeedUseCase } from "../../../../../domain/usecases/pet/get_pets_feed/get_pets_feed_use_case"
-import { GetUserPetsUseCase } from "../../../../../domain/usecases/pet/get_user_pets/get_user_pets_use_case"
+import { envelope } from "../../../utils"
+import {
+  CreatePetDto,
+  CreatePetUseCase,
+  FileUploadDto,
+  GetPetsFeedUseCase,
+  GetUserPetsUseCase,
+  UploadPetPictureUseCase,
+} from "../../../../../domain/usecases"
+import { validateDto } from "../../../../../core/utils"
 
 @injectable()
 export class PetController {

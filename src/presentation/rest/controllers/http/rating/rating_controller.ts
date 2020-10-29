@@ -2,10 +2,9 @@ import { inject, injectable } from "tsyringe"
 
 import { Request, Response } from "express"
 import { StatusCodes } from "http-status-codes"
-import { RateUserDto } from "../../../../../domain/usecases/user/rate_user/rate_user.dto"
-import { validateDto } from "../../../../../core/utils/validate_dto"
-import { RateUserUseCase } from "../../../../../domain/usecases/user/rate_user/rate_user_use_case"
-import { envelope } from "../../../utils/envelope"
+import { RateUserDto, RateUserUseCase } from "../../../../../domain/usecases"
+import { validateDto } from "../../../../../core/utils"
+import { envelope } from "../../../utils"
 
 @injectable()
 export class RatingController {

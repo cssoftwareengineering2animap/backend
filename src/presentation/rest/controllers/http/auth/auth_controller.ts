@@ -1,13 +1,15 @@
 import { injectable, inject } from "tsyringe"
 import { Request, Response } from "express"
-import { envelope } from "../../../utils/envelope"
-import { LoginUseCase } from "../../../../../domain/usecases/auth/login/login_use_case"
-import { LoginDto } from "../../../../../domain/usecases/auth/login/login_dto"
-import { validateDto } from "../../../../../core/utils/validate_dto"
-import { RequestForgotPasswordTokenUseCase } from "../../../../../domain/usecases/auth/request_forgot_password_token/request_forgot_password_token_use_case"
-import { RequestForgotPasswordTokenDto } from "../../../../../domain/usecases/auth/request_forgot_password_token/request_forgot_password_token_dto"
-import { ResetPasswordWithForgotPasswordTokenDto } from "../../../../../domain/usecases/auth/reset_password_with_forgot_password_token/reset_password_with_forgot_password_token_dto"
-import { ResetPasswordWithForgotPasswordTokenUseCase } from "../../../../../domain/usecases/auth/reset_password_with_forgot_password_token/reset_password_with_forgot_password_token_use_case"
+import {
+  LoginDto,
+  LoginUseCase,
+  RequestForgotPasswordTokenDto,
+  RequestForgotPasswordTokenUseCase,
+  ResetPasswordWithForgotPasswordTokenDto,
+  ResetPasswordWithForgotPasswordTokenUseCase,
+} from "../../../../../domain/usecases"
+import { envelope } from "../../../utils"
+import { validateDto } from "../../../../../core/utils"
 
 @injectable()
 export class AuthController {

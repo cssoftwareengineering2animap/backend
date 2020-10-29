@@ -5,9 +5,8 @@ import { StatusCodes } from "http-status-codes"
 import { app } from "../../../server"
 import * as factory from "../../../../../infra/database/support/factory"
 import * as connection from "../../../../../infra/database/support/connection"
-import { User } from "../../../../../domain/entities/user_entity"
-import { Pet } from "../../../../../domain/entities/pet_entity"
-import { File } from "../../../../../domain/entities/file_entity"
+import { User, Pet, File } from "../../../../../domain/entities"
+
 import * as authTestUtils from "../../../../../../test/utils/auth"
 
 describe("Pet controller functional test suite", () => {

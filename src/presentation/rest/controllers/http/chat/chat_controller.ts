@@ -1,5 +1,4 @@
-import { injectable, inject } from "tsyringe"
-import { envelope } from "../../../utils/envelope"
+import { injectable } from "tsyringe"
 
 @injectable()
 export class ChatController {}

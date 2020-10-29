@@ -1,8 +1,10 @@
 import { inject, injectable } from "tsyringe"
 import * as socketio from "socket.io"
 import { AckFunction, Message } from "../types"
-import { SaveChatMessageUseCase } from "../../../../../domain/usecases/chat/save_chat_message/save_chat_message_use_case"
-import { SaveChatMessageDto } from "../../../../../domain/usecases/chat/save_chat_message/save_chat_message.dto"
+import {
+  SaveChatMessageUseCase,
+  SaveChatMessageDto,
+} from "../../../../../domain/usecases"
 
 @injectable()
 export class ChatController {

@@ -4,8 +4,8 @@ import { StatusCodes } from "http-status-codes"
 import { app } from "../../../server"
 import * as factory from "../../../../../infra/database/support/factory"
 import * as connection from "../../../../../infra/database/support/connection"
-import { Host } from "../../../../../domain/entities/host_entity"
-import { User } from "../../../../../domain/entities/user_entity"
+import { Host, User } from "../../../../../domain/entities"
+
 import * as authTestUtils from "../../../../../../test/utils/auth"
 
 describe("Host controller functional test suite", () => {

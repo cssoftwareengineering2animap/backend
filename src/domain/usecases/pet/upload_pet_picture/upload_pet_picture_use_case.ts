@@ -1,6 +1,6 @@
 import { injectable } from "tsyringe"
 import { getManager } from "typeorm"
-import { ValidationError } from "../../../../core/errors/validation_error"
+import { ValidationError } from "../../../../core/errors"
 import { ID } from "../../../../core/types/id"
 import { File } from "../../../entities/file_entity"
 import { Pet } from "../../../entities/pet_entity"

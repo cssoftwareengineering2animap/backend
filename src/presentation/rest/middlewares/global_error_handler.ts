@@ -1,9 +1,11 @@
 import { Request, Response, NextFunction } from "express"
 import { StatusCodes } from "http-status-codes"
-import { ApplicationError } from "../../../core/errors/application_error"
-import { ValidationError } from "../../../core/errors/validation_error"
-import { UnauthorizedError } from "../../../core/errors/unauthorized_error"
-import { ForbiddenError } from "../../../core/errors/forbidden_error"
+import {
+  ForbiddenError,
+  UnauthorizedError,
+  ValidationError,
+  ApplicationError,
+} from "../../../core/errors"
 
 export const globalErrorHandler = (
   error: unknown,
