@@ -1,6 +1,7 @@
 import { inject, injectable } from "tsyringe"
-import { ResetPasswordWithForgotPasswordTokenDto } from "../.."
+import { ResetPasswordWithForgotPasswordTokenDto } from "./reset_password_with_forgot_password_token_dto"
 import { ValidationError } from "../../../../core/errors"
+import { ID } from "../../../../core/types"
 import { RedisProvider } from "../../../../infra/providers"
 import { User, Host } from "../../../entities"
 import { SessionProviderToken, SessionProvider } from "../../../providers"
