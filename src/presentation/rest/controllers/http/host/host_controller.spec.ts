@@ -99,22 +99,17 @@ describe("Host controller functional test suite", () => {
     expect(response.body).toEqual([{ message: "Esse cpf já está em uso" }])
   })
 
-  test("POST api/v1/hosts :: when cpf is invalid, should fail with an error message", async () => {
-    const host = await factory.build(Host)
+  test.each([["s"], [" "], ["83592353929523"], [undefined]])(
+    "POST api/v1/hosts :: when cpf is invalid, should fail with an error message",
+    async cpf => {
+      const host = await factory.build(Host, { cpf })
 
-    const overrides = [{ cpf: "s" }, { cpf: " " }, { cpf: "83592353929523" }]
+      const response = await request(app).post("/api/v1/hosts").send(host)
 
-    const responses = await Promise.all(
-      overrides
-        .map(override => ({ ...host, ...override }))
-        .map(host => request(app).post("/api/v1/hosts").send(host))
-    )
-
-    for (const response of responses) {
       expect(response.status).toBe(StatusCodes.BAD_REQUEST)
       expect(response.body).toEqual([{ message: "O cpf deve ser válido" }])
     }
-  })
+  )
 
   test("POST api/v1/hosts :: when all validation passes, should create a host account", async () => {
     const host = await factory.build(Host)
