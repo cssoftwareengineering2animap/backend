@@ -207,6 +207,50 @@ describe("Tour controller functional test suite", () => {
           },
         ])
       })
+
+      test.only.each([
+        [TourStatus.accepted, TourStatus.pending],
+        [TourStatus.pending, TourStatus.accepted],
+        [TourStatus.pending, TourStatus.completed],
+        [TourStatus.pending, TourStatus.denied],
+      ])(
+        `should be able to filter a list of tours that my pets are involved in based on tour status`,
+        async (otherStatus, targetStatus) => {
+          const user = await factory.create(User)
+          const pet = await factory.create(Pet, { owner: user })
+
+          await factory.create(Tour, {
+            pet,
+            status: otherStatus,
+          })
+
+          const tour = await factory.create(Tour, {
+            pet,
+            status: targetStatus,
+          })
+
+          const token = await authTestUtils.login({ app, client: user })
+
+          const response = await request(app)
+            .get(`/api/v1/tours?status=${targetStatus}`)
+            .set("Authorization", token)
+            .expect(StatusCodes.OK)
+
+          expect(response.body.data).toMatchObject([
+            {
+              id: tour.id,
+              status: tour.status,
+              tip: tour.tip,
+              host: {
+                id: tour.host.id,
+              },
+              pet: {
+                id: tour.pet.id,
+              },
+            },
+          ])
+        }
+      )
     })
   })
 })
