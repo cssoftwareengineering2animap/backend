@@ -208,7 +208,7 @@ describe("Tour controller functional test suite", () => {
         ])
       })
 
-      test.only.each([
+      test.each([
         [TourStatus.accepted, TourStatus.pending],
         [TourStatus.pending, TourStatus.accepted],
         [TourStatus.pending, TourStatus.completed],
