@@ -17,7 +17,13 @@ export const cpf = (
       options: validationOptions,
       async: false,
       validator: {
-        validate: (value: string | number) => validateBr.cpf(value),
+        validate: (value: string | number) => {
+          if (!value) {
+            return false
+          }
+
+          return validateBr.cpf(value)
+        },
       },
     })
   }
