@@ -1,4 +1,5 @@
-import { IsNotEmpty } from "class-validator"
+import { IsIn, IsNotEmpty, IsOptional } from "class-validator"
+import { TourStatus } from "../../../entities"
 import { User } from "../../../entities/user_entity"
 
 export class GetTourFeedDto {
@@ -8,4 +9,8 @@ export class GetTourFeedDto {
 
   @IsNotEmpty({ message: "O dono dos pets deve ser informado" })
   user: User
+
+  @IsOptional()
+  @IsIn(Object.values(TourStatus))
+  status?: TourStatus
 }

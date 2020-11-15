@@ -83,7 +83,10 @@ export class TourController {
   }
 
   getTours = async (request: Request, response: Response) => {
-    const dto = new GetTourFeedDto({ user: request.context.user })
+    const dto = new GetTourFeedDto({
+      user: request.context.user,
+      status: request.query.status as TourStatus,
+    })
 
     await validateDto(dto)
 

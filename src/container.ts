@@ -12,7 +12,6 @@ import { RedisSessionProvider } from "./infra/providers/session/redis_session_pr
 import { MailgunMailProvider } from "./infra/providers/mail/mailgun_mail_provider"
 
 export const register = () => {
-  console.log("ccccccc")
   container.register(EncryptionProviderToken, BcryptEncryptionProvider)
 
   container.register(SessionProviderToken, {

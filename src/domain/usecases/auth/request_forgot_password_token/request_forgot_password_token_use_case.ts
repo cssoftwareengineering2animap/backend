@@ -1,14 +1,11 @@
 import { inject, injectable } from "tsyringe"
 import cuid from "cuid"
 import { env } from "process"
-import { RequestForgotPasswordTokenDto } from "../.."
+import { RequestForgotPasswordTokenDto } from "./request_forgot_password_token_dto"
 import { ValidationError } from "../../../../core/errors"
 import { RedisProvider } from "../../../../infra/providers"
 import { User, Host } from "../../../entities"
 import { MailProviderToken, MailProvider } from "../../../providers"
-import { ValidationError } from "../../../../core/errors/validation_error"
-import { RedisProvider } from "../../../../infra/providers/redis/redis_provider"
-import { RequestForgotPasswordTokenDto } from "./request_forgot_password_token_dto"
 
 @injectable()
 export class RequestForgotPasswordTokenUseCase {
