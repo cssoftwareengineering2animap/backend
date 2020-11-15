@@ -30,6 +30,9 @@ export class Tour extends BaseEntity {
   @Column()
   tip: string
 
+  @Column()
+  petId: ID
+
   @ManyToOne(() => Pet, pet => pet.tours)
   pet: Pet
 
